@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="patent"
+  id="myeclipse.1532415978485"
+  context-root="/patent"
+  j2ee-spec="6.0"
+  archive="patent.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

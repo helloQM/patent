@@ -1,0 +1,234 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.qimou</groupId>
+  <artifactId>patent</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>patent</name>
+
+    <parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.6.RELEASE</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter</artifactId>
+	    </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+<!-- 			<exclusions>去掉默认配置   -->
+<!-- 	            <exclusion>   -->
+<!-- 	                <groupId>org.springframework.boot</groupId>   -->
+<!-- 	                <artifactId>spring-boot-starter-logging</artifactId>   -->
+<!-- 	            </exclusion>   -->
+<!-- 	        </exclusions>  -->
+		</dependency>
+		
+<!-- 		<dependency> 引入log4j2依赖   -->
+<!-- 	        <groupId>org.springframework.boot</groupId>   -->
+<!-- 	        <artifactId>spring-boot-starter-log4j2</artifactId>   -->
+<!-- 	    </dependency>  -->
+		
+<!-- <scope>provided</scope> 打包war包时不带tomcat插件 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+	<!-- springboot 邮件服务 -->
+	<dependency> 
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-mail</artifactId>
+	</dependency> 
+	
+<!-- springboot 整合 Mybatis -->
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+
+		<dependency>
+	        <groupId>mysql</groupId>
+	        <artifactId>mysql-connector-java</artifactId>
+<!-- 	        <version>5.1.24</version> -->
+	        <version>8.0.11</version>
+	    </dependency>
+		<!-- JDBC -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.springframework.boot</groupId> -->
+<!-- 			<artifactId>spring-boot-starter-jdbc</artifactId> -->
+<!-- 		</dependency>     -->
+		<!-- mybatis -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.mybatis</groupId> -->
+<!-- 			<artifactId>mybatis-spring</artifactId> -->
+<!-- 			<version>1.2.2</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.mybatis</groupId> -->
+<!-- 			<artifactId>mybatis</artifactId> -->
+<!-- 			<version>3.2.8</version> -->
+<!-- 		</dependency>     -->
+		<!-- mysql -->
+<!-- 		<dependency> -->
+<!-- 		    <groupId>mysql</groupId> -->
+<!-- 		    <artifactId>mysql-connector-java</artifactId> -->
+<!-- 		    <version>5.1.24</version> -->
+<!-- 		</dependency> -->
+
+		<!-- Mybatis -->
+		<!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.mybatis.spring.boot</groupId> -->
+		<!-- <artifactId>mybatis-spring-boot-starter</artifactId> -->
+		<!-- <version>1.3.0</version> -->
+		<!-- </dependency> -->
+
+		<!-- <dependency> <groupId>org.mybatis</groupId> <artifactId>mybatis</artifactId> 
+			<version>3.2.8</version> </dependency> <dependency> <groupId>org.mybatis</groupId> 
+			<artifactId>mybatis-spring</artifactId> <version>1.2.2</version> </dependency> -->
+		<!-- 引入jdbc依赖之后，Spring Boot会自动默认分别注入DataSourceTransactionManager或JpaTransactionManager -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework.boot</groupId> -->
+		<!-- <artifactId>spring-boot-starter-jdbc</artifactId> -->
+		<!-- </dependency> -->
+
+		
+		<!-- 连接池 -->
+		<dependency>
+			<groupId>com.jolbox</groupId>
+			<artifactId>bonecp-spring</artifactId>
+			<version>0.8.0.RELEASE</version>
+		</dependency>
+
+<!-- 		修改配置或代码可以自动实现热部署 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<version>1.5.14.RELEASE</version>
+<!-- 			<optional>true</optional> -->
+		</dependency>
+
+<!-- json 相关包 -->
+		<dependency>    
+		    <groupId>net.sf.json-lib</groupId>    
+		    <artifactId>json-lib</artifactId>    
+		    <version>2.4</version>    
+		    <classifier>jdk15</classifier>    
+		</dependency>  
+		
+		<!-- 添加thymeleaf 支持页面跳转-->
+        <dependency>  
+	         <groupId>org.springframework.boot</groupId>  
+	         <artifactId>spring-boot-starter-thymeleaf</artifactId>  
+        </dependency>
+        <dependency>
+		    <groupId>net.sourceforge.nekohtml</groupId>
+		    <artifactId>nekohtml</artifactId>
+		    <version>1.9.22</version>
+		</dependency>
+		
+<!-- 		admin监控客户端 相关包 -->
+<!-- 		  <dependency> -->
+<!-- 		    <groupId>de.codecentric</groupId> -->
+<!-- 		    <artifactId>spring-boot-admin-starter-client</artifactId> -->
+<!-- 		    <version>1.5.6</version> -->
+<!-- 		  </dependency> -->
+		  
+<!-- 		本地jar包  开始 -->
+				<dependency>
+				    <groupId>com.github.stuxuhai</groupId>
+				    <artifactId>jpinyin</artifactId>
+				    <version>1.1.6</version>
+ 				    <scope>system</scope>  <!-- system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它 -->
+				    <systemPath>${project.basedir}/lib/jpinyin-1.1.6.jar</systemPath>
+				</dependency>
+				<dependency>
+				    <groupId>net.sourceforge</groupId>
+				    <artifactId>pinyin4j</artifactId>
+				    <version>2.5.0</version>
+				    <scope>system</scope>
+				    <systemPath>${project.basedir}/lib/pinyin4j-2.5.0.jar</systemPath>
+				</dependency>
+				<dependency>
+				    <groupId>com.google</groupId>
+				    <artifactId>gson</artifactId>
+				    <version>2.2.4</version>
+				    <scope>system</scope>
+				    <systemPath>${project.basedir}/lib/gson-2.2.4.jar</systemPath>
+				</dependency>
+<!-- 				<dependency> -->
+<!-- 				    <groupId>net.sf</groupId> -->
+<!-- 				    <artifactId>json</artifactId> -->
+<!-- 				    <version>2.4</version> -->
+<!-- 				    <scope>system</scope> -->
+<!-- 				    <systemPath>${project.basedir}/lib/json-lib-2.4-jdk15.jar</systemPath> -->
+<!-- 				</dependency> -->
+<!-- 				<dependency> -->
+<!-- 				    <groupId>org.apache.commons</groupId> -->
+<!-- 				    <artifactId>lang</artifactId> -->
+<!-- 				    <version>2.6</version> -->
+<!-- 				    <scope>system</scope> -->
+<!-- 				    <systemPath>${project.basedir}/lib/commons-lang-2.6.jar</systemPath> -->
+<!-- 				</dependency> -->
+<!-- 		本地jar包  结束 -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.1.0</version>
+    <scope>provided</scope>
+</dependency>
+	</dependencies>
+
+	<build>
+		
+		
+		<plugins>
+		 	
+		 	<plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-compiler-plugin</artifactId>
+	            <version>3.3</version>
+	            <configuration>
+	                <source>1.8</source>
+	                <target>1.8</target>
+	            </configuration>
+	        </plugin>
+<!-- 			<plugin> -->
+<!-- 			    <groupId>org.springframework.boot</groupId> -->
+<!-- 			    <artifactId>spring-boot-maven-plugin</artifactId> -->
+<!-- 			    <configuration> -->
+<!-- 			        <includeSystemScope>true</includeSystemScope> -->
+<!-- 			    </configuration> -->
+<!-- 			</plugin> -->
+		<!--设置maven-war-plugins插件，否则外部依赖无法打进war包 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>lib</directory>
+							<targetPath>WEB-INF/lib/</targetPath>
+							<includes>
+								<include>**/*.jar</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+			
+			
+		</plugins>
+
+	</build>
+
+</project>

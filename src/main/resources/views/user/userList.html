@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>用户列表</title>
+
+	<link rel="shortcut icon" href="../ico/qm.png">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../css/comm.css">
+	<script type="text/javascript" src="../js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	
+	<script>
+        window.onload=function(){
+            var v = new Vue({
+                el:'#box',
+                data:{
+                    myData:[],
+                    userName:'',
+                    age:'',
+                    nowIndex:-10
+                },
+                methods:{
+                    add:function(){
+                        this.myData.push({
+                            name:this.userName,
+                            age:this.age
+                        });
+
+                        this.username='';
+                        this.age='';
+                    },
+                    deleteMsg:function(n){
+                        if(n==-2){
+                            this.myData=[];
+                        }else{
+                            this.myData.splice(n,1);
+                        }
+                    }
+                }
+            });
+        };
+    </script>	
+</head>
+
+<body>
+	<div class="container" id="box">
+		<div class="header">
+		   <ul class="nav nav-pills pull-right">
+		     <li class="active"><a href="#">当前用户：************</a></li>
+		     <li><a href="/logout">安全退出</a></li> 
+		   </ul>
+		   <h3 class="text-muted">Patent project</h3>
+		 </div>
+		 
+<!-- 		<div class="header"> -->
+<!-- 			<iframe src="./header.html" frameborder="0" scrolling="no"></iframe> -->
+<!-- 		</div> -->
+		
+		
+		<form role="form">
+            <div class="form-group">
+                <label for="id_userName">用户名:</label>
+                <input type="text" id="id_userName" class="form-control" placeholder="输入用户名" v-model="userName">
+            </div>
+            <div class="form-group">
+                <label for="age">年　龄:</label>
+                <input type="text" id="age" class="form-control" placeholder="输入年龄" v-model="age">
+            </div>
+                <label for="age">姓 名1:</label>
+                <input type="text" id="nm1" class="input-medium" placeholder="输入姓名1" v-model="nm1">
+                <label for="age">姓 名2:</label>
+                <input type="text" id="nm2" class="input-xlarge" placeholder="输入姓名2" v-model="nm2">
+            <div class="form-group">
+                <input type="button" value="添加" class="btn btn-primary" v-on:click="add()">
+                <input type="reset" value="重置" class="btn btn-danger">
+            </div>
+        </form>
+        
+        <form class="well form-inline">
+			<input type="text" class="input-small" placeholder="Email">
+			<input type="password" class="input-small" placeholder="Password">
+			<label class="checkbox">
+				<input type="checkbox"> 记住我
+			</label>
+			<button type="submit" class="btn">登录</button>
+		</form>
+		
+		<form class="well form-inline text-right">
+		  <div class="form-group">
+		    <label class="sr-only" for="exampleInputEmail3">Email address</label>
+		    <input type="email" class="form-control" id="exampleInputEmail3" placeholder="请输入用户名">
+		  </div>
+		  <div class="form-group">
+		    <label class="sr-only" for="exampleInputPassword3">Password</label>
+		    <input type="password" class="form-control" id="exampleInputPassword3" placeholder="请输入姓名">
+		  </div>
+		  <div class="checkbox">
+		    <label>
+		      <input type="checkbox"> 正常状态
+		    </label>
+		  </div>
+		  <button type="submit" class="btn btn-default">查询</button>
+		</form>
+        
+        <table class="table table-bordered table-hover">
+            <caption class="h3 text-info">用户信息表</caption>
+            
+            <tr class="text-danger">
+                <th class="text-center">序号</th>
+                <th class="text-center">用户名</th>
+                <th class="text-center">姓名</th>
+                <th class="text-center">部门</th>
+                <th class="text-center">性别</th>
+                <th class="text-center">邮箱</th>
+                <th class="text-center">手机</th>
+                <th class="text-center">角色</th>
+                <th class="text-center">状态</th>
+                <th class="text-center"><abbr title="可以快速禁用或启用指定用户">操作</abbr></th>
+            </tr>
+            <tr class="text-center" v-for="item in myData">
+                <td>{{$index+1}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.age}}</td>
+                <td>{{item.age}}</td>
+                <td>{{item.age}}</td>
+                <td>{{item.age}}</td>
+                <td>{{item.age}}</td>
+                <td>{{item.age}}</td>
+                <td>{{item.age}}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#layer" v-on:click="nowIndex=$index">禁用</button>
+                </td>
+            </tr>
+            <tr v-show="myData.length!=0">
+                <td colspan="10" class="text-right">
+                    <button class="btn btn-danger btn-sm" v-on:click="nowIndex=-2" data-toggle="modal" data-target="#layer" >全部禁用</button>
+                </td>
+            </tr>
+            <tr v-show="myData.length==0">
+                <td colspan="10" class="text-center text-muted">
+                    <p>暂无数据....</p>
+                </td>
+            </tr>
+        </table>
+        
+		<div class="footer">
+			<iframe src="../footer.html" width="100%" frameborder="0" scrolling="no"></iframe>
+		</div>
+		
+
+<!--模态框 弹出框-->
+        <div role="dialog" class="modal fade bs-example-modal-sm" id="layer">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                        <h4 class="modal-title">确认禁用吗 ?</h4>
+                    </div>
+                    <div class="modal-body text-right">
+                        <button data-dismiss="modal" class="btn btn-primary btn-sm">取消</button>
+                        <button data-dismiss="modal" class="btn btn-danger btn-sm" v-on:click="deleteMsg(nowIndex)">确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+	</div>
+</body>
+</html>

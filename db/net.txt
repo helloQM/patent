@@ -1,0 +1,99 @@
+﻿https://github.com/ityouknow/spring-boot-examples
+
+mybatis 注解方式:
+https://blog.csdn.net/yangshangwei/article/details/80003186
+http://www.cnblogs.com/goloving/p/9241421.html
+https://www.cnblogs.com/EasonJim/p/7449699.html
+https://blog.csdn.net/u014331288/article/details/79471791
+
+control获得http传值：
+https://blog.csdn.net/after_/article/details/50516770
+https://www.cnblogs.com/wxwBlog/p/6128882.html
+
+上传文件：
+https://blog.csdn.net/change_on/article/details/59529034/
+
+boneCP连接池的参数配置:
+https://blog.csdn.net/netdevgirl/article/details/51498626
+经典4种连接池：
+https://www.cnblogs.com/maxlei/p/5954133.html
+
+全国城市区县编码：
+https://www.cnblogs.com/thinksasa/p/3335212.html
+https://wenku.baidu.com/view/fe287770b207e87101f69e3143323968011cf46e.html###
+https://www.cnblogs.com/bdqczhl/p/5592079.html
+https://www.cnblogs.com/yantz/p/4818447.html
+
+springboot 过滤器:
+https://blog.csdn.net/weixin_37891479/article/details/79527641
+
+springboot 静态资源的配置：
+https://blog.csdn.net/yiifaa/article/details/78299052
+
+vue:
+	分页[插件，组件]：
+		https://blog.csdn.net/qq_16371909/article/details/79524605
+		http://www.jq22.com/jquery-info15311
+		http://www.jq22.com/jquery-info16260
+		https://segmentfault.com/a/1190000008606958
+		https://www.cnblogs.com/sebastian-tyd/p/7853109.html
+https://cn.vuejs.org/
+https://www.jianshu.com/p/31eb89bc1054
+https://blog.csdn.net/hjh15827475896/article/details/78207066
+https://cnodejs.org/topic/5993e5acf36051a45246c07a
+
+
+springboot_html:
+https://blog.csdn.net/sinat_33889619/article/details/78339042
+
+bootstrap-css:
+http://www.cnblogs.com/chencye/p/5690043.html
+https://www.w3cplus.com/css/elements-horizontally-center-with-css.html
+https://v3.bootcss.com/css/
+https://v2.bootcss.com/base-css.html
+http://www.runoob.com/bootstrap/bootstrap-v2-forms.html
+
+bootstrap-select:
+https://www.cnblogs.com/landeanfen/p/7457283.html
+
+bootstrap-input[text]
+http://w3c.3306.biz/bootstrap_forms/show-25-64-1.html
+
+bootstrap模态对话框：
+http://www.runoob.com/bootstrap/bootstrap-modal-plugin.html
+https://www.cnblogs.com/softwarefang/p/6094174.html
+
+jquery各种导航栏：
+http://sc.chinaz.com/jiaoben/caidanhaohang.html
+
+bootstrap导航栏：
+https://blog.csdn.net/s740556472/article/details/54632905
+http://www.runoob.com/bootstrap/bootstrap-navbar.html
+https://blog.csdn.net/u013064615/article/details/49645863
+https://blog.csdn.net/u010394015/article/details/51754827
+
+bootstrap_tree:
+http://jonmiles.github.io/bootstrap-treeview/
+https://jquery-plugins.net/bootstrap-tree-view
+https://blog.csdn.net/babyxue/article/details/73835444
+https://www.jb51.net/article/78769.htm
+http://www.treejs.cn/v3/api.php
+https://blog.csdn.net/jifengdalu/article/details/80565167
+
+bootstrap校验:
+https://www.cnblogs.com/xiaoyuersdch/p/8251519.html
+https://blog.csdn.net/asd245025733/article/details/78061577?locationNum=7&fps=1
+https://blog.csdn.net/u014525494/article/details/54971890
+
+bootstrap 轮播图片:
+https://blog.csdn.net/qq_42451979/article/details/80741028
+
+jquery：alery
+http://www.jq22.com/jquery-info2351
+http://www.jq22.com/jquery-info15047
+
+sqlError:
+https://segmentfault.com/q/1010000006574557/a-1020000006576101
+
+正式环境调优：
+MyBatisConfig.java中  setIdleMaxAgeInMinutes的值设置为0

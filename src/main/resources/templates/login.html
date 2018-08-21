@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+
+    <link rel="stylesheet" type="text/css" href="../views/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../views/css/bootstrapValidator.css">
+    <link rel="stylesheet" href="../views/css/login.css">
+    
+    <script type="text/javascript" src="../views/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../views/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../views/js/bootstrapValidator.js"></script>
+	<script type="text/javascript" src="../views/js/vue.js"></script>
+	<script type="text/javascript" src="../views/js/vue-resource.js"></script>
+	<script type="text/javascript" src="../views/js/comm.js"></script>
+	
+	<script>
+       $(document).ready(function() {
+            var v = new Vue({
+                el:'#box',
+                data:{
+                    userID:'',
+                    pwd:'',
+                    userIDShow:true,
+                    pwdShow:true
+                },
+                created:function(){
+//                 	this.init();
+                },
+                ready:function(){
+// 	                this.init();
+	            },
+                methods:{
+                    doLogin:function(){//加载页面主题内容
+//                     	alert(this.pwd);
+//                     	return;
+                        this.$http.post('/doLogin',{
+                            userID: this.userID,
+							pwd: this.pwd,
+							nullParam:''//没用的参数，用来生成&。
+                        },{
+                            emulateJSON:true
+                        }).then(function(res){//success
+                            //alert(res.data);
+                            if(res.data.code==0){
+                            	alert(res.data.msg);
+	                            window.location.href="/nav";//home页面
+                            }else{
+                            	alert(res.data.msg);
+                            	return;
+                            }
+							
+                        },function(res){
+                           alert(res.data.msg+" : "+res.status);//error
+                        });
+                    },
+                    
+                    showFunc:function(){
+                    	if(this.userID.length>0){
+                    		this.userIDShow=false;
+                    	}else{
+                    		this.userIDShow=true;
+                    	}
+                    	if(this.pwd.length>0){
+                    		this.pwdShow=false;
+                    	}else{
+                    		this.pwdShow=true;
+                    	}
+                    }
+        		}
+        	});
+        	
+        	$('#id_bv').bootstrapValidator({
+        		message: 'This value is not valid',
+		        feedbackIcons: {
+		            valid: 'glyphicon glyphicon-ok',
+		            invalid: 'glyphicon glyphicon-remove',
+		            validating: 'glyphicon glyphicon-refresh'
+		        },
+       			fields: {
+	       			userID: {
+		                message: '无效用户名',
+		                validators: {
+		                    notEmpty: {
+		                        message: '用户名不能为空！'
+		                    },
+		                    stringLength: {
+		                        min: 5,
+		                        max: 20,
+		                        message: '请输入5-20位的用户名！'
+		                    },
+		                    regexp: {
+		                        regexp: /^[a-zA-Z0-9_\.]+$/,
+		                        message: '用户名不能包含特殊字符！'
+		                    }
+		                }
+		            },
+		            pwd: {
+		                message: '无效密码',
+		                validators: {
+		                    notEmpty: {
+		                        message: '密码不能为空！'
+		                    },
+		                    stringLength: {
+		                        min: 5,
+		                        max: 16,
+		                        message: '请输入5-16位的用户名！'
+		                    },
+		                    regexp: {
+		                        regexp: /^[a-zA-Z0-9_\.]+$/,
+		                        message: '用户名不能包含特殊字符！'
+		                    }
+		                }
+		            }
+		            
+		            
+       			}
+       			
+        	});
+		});
+    </script>
+</head>
+<body>
+<div class="container" id="box">
+<form class="form-inline" role="form" v-show="false">
+	<div class="form-group has-success has-feedback">
+	  <label class="control-label" for="inputSuccess4">12345</label>
+	  <input type="text" class="form-control" id="inputSuccess4">
+	  <span class="glyphicon glyphicon-user form-control-feedback"></span>
+	</div>
+</form>
+
+<div class="input-group" v-show="false">
+  <span class="input-group-addon glyphicon glyphicon-user">用户名</span>
+  <input type="text" class="form-control input-lg" v-model="userID" name="userID" placeholder="用户名" maxlength="20">
+</div>
+        <div class="form row" id="id_bv">
+            <div class="form-horizontal col-md-offset-3" id="login_form">
+                <h3 class="form-title">账号登录</h3>
+	                <div class="col-md-9">
+	                   <div class="form-group has-feedback">
+	<!--                    		<label class="control-label" for="username">用户名</label> -->
+	                        <span class="glyphicon glyphicon-user form-control-feedback" v-show="userIDShow"></span>
+	                        <input type="text" class="form-control" v-model="userID" name="userID" placeholder="用户名" maxlength="20" @keyup="showFunc">
+	                    </div>
+	                    <br />
+	                    
+
+	                    <div class="form-group has-feedback">
+	<!--                         <label class="control-label" for="password">密　码</label> -->
+	                        <span class="glyphicon glyphicon-lock form-control-feedback" v-show="pwdShow"></span>
+	                        <input type="password" class="form-control" v-model="pwd" name="pwd" placeholder="密码" maxlength="16" @keyup.13="doLogin" @keyup="showFunc">
+	                    </div>
+	                    
+	                    <div class="form-group">
+	                        <label class="checkbox">
+	                            <input type="checkbox" name="remember" value="1"/>记住我
+	                        </label>
+	                    </div>
+	                    <div class="form-group col-md-offset-9">
+	                        <button type="button" class="btn btn-success pull-right" @click="doLogin"  >登录</button>
+	                    </div>
+	                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

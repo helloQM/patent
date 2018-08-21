@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>编辑用户</title>
+
+	<link rel="shortcut icon" href="../ico/qm.png">
+	<link rel="stylesheet" type="text/css" href="../css/grid.css">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../css/comm.css">
+	<script type="text/javascript" src="../js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<style type="text/css">
+		  div [class*="col-"] {
+			  background-color: #FFFFF0;
+			}
+	</style>
+	<script>
+        window.onload=function(){
+            var v = new Vue({
+                el:'#box',
+                data:{
+                    
+                },
+                methods:{
+                    
+                }
+            });
+        };
+    </script>	
+</head>
+
+<body>
+	<div class="container" id="box">
+		
+		 
+
+		<form role="form">
+            <div class="form-group">
+                <label for="id_userName">用户名:</label>
+                <input type="text" id="id_userName" class="form-control" placeholder="输入用户名" v-model="userName">
+            </div>
+            <div class="form-group">
+                <label for="age">年　龄:</label>
+                <input type="text" id="age" class="input-medium" placeholder="输入年龄" v-model="age">
+            </div>
+                <label for="age">姓 名1:</label>
+                <input type="text" id="nm1" class="input-medium" placeholder="输入姓名1" v-model="nm1">
+                <label for="age">姓 名2:</label>
+                <input type="text" id="nm2" class="input-xlarge" placeholder="输入姓名2" v-model="nm2">
+            <div class="form-group">
+                <input type="button" value="提交" class="btn btn-primary" v-on:click="add()">
+                <input type="reset" value="重置" class="btn btn-danger">
+            </div>
+        </form>
+		
+		
+		<div class="row">
+			<div class="col-md-3 col-md-offset-3" >用户名</div>
+			<div class="col-md-3 " ><input type="text" id="age" class="input-medium" placeholder="输入年龄" v-model="age"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-3 col-md-offset-3" >.col-md-3</div>
+			<div class="col-md-3 " >.col-md-3</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3" >
+				<div class="form-group form-inline">
+	                <label for="age">部 门:</label>
+	                <input type="text" id="age" class="form-control" placeholder="输入部门" v-model="age">
+	            </div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3" >
+				<div class="form-group form-inline">
+	                <label for="age">邮 箱:</label>
+	                <input type="email" id="age" class="form-control" placeholder="输入邮箱" v-model="age">
+	            </div>
+			</div>
+		</div>
+
+		<div class="footer">
+			<iframe src="../footer.html" width="100%" frameborder="0" scrolling="no"></iframe>
+		</div>
+
+	</div>
+
+
+</body>
+</html>

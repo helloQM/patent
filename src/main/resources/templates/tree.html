@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>奇牟nav</title>
+
+	<link rel="shortcut icon" href="../views/ico/qm.png">
+	<link rel="stylesheet" type="text/css" href="../views/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../views/css/bootstrapStyle.css">
+	<link rel="stylesheet" type="text/css" href="../views/css/comm.css">
+	<script type="text/javascript" src="../views/js/jquery.min.js"></script>
+	<script type="text/javascript" src="../views/js/jquery.ztree.core.js"></script>
+	<script type="text/javascript" src="../views/js/jquery.ztree.excheck.js"></script>
+	<script type="text/javascript" src="../views/js/jquery.ztree.exedit.js"></script>
+    <script type="text/javascript" src="../views/js/bootstrap.js"></script>
+	<script type="text/javascript" src="../views/js/vue.js"></script>
+	<script type="text/javascript" src="../views/js/vue-resource.js"></script>
+	
+	<script>
+
+		var setting = {
+			check: {
+				enable: true
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: { 
+				onCheck: onCheck
+			}
+		};
+		
+		$(document).ready(function(){
+			var vue = new Vue({
+	            el:'#box',
+	            data:{
+					setting:[], // 目录树的设置
+					zNodes:[] // 节点的数据
+	            },
+	            ready:function(){
+					this.setting = setting;
+					this.loadAuthority();
+		        },
+	            methods:{
+	                checkedTree:function(){//点击按钮获得已经勾选的目录id
+	                	alert($("#id_show").html());
+	                },
+	                initCheck:function(pid){//初始化勾选并选中指定的目录
+		                var zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
+						var node = zTree_Menu.getNodeByParam("id",pid);
+						zTree_Menu.checkNode(node,true,true);//勾选ID的节点
+						zTree_Menu.selectNode(node,true);//指定选中ID的节点
+						zTree_Menu.expandNode(node, true, false);//指定选中ID节点展开
+						
+						onCheck();
+	                },
+	                loadAuthority:function(){
+	//                 	alert(JSON.stringify(this.zNodes));
+	                		this.$http.post('/listAllAuthority',{
+	                            nullParam:''//没用的参数，用来生成&。
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+		                        this.zNodes = [];//清空
+	//                             alert(res.data.length);
+	//                             alert(JSON.stringify(res.data[0]));
+								for(var i = 0;i<res.data.length;i++){
+	// 						    	alert(JSON.stringify(res.data[i]));//jquery解析json格式数据为string
+									this.zNodes.push(res.data[i]);
+								}
+	// 							alert(JSON.stringify(this.zNodes));
+								$.fn.zTree.init($("#treeDemo"), this.setting, this.zNodes);
+								this.initCheck(3);
+	                        },function(res){
+	                            //alert("error : "+res.status);//error
+	                        });
+	                }
+	            }
+	        });
+		});
+
+
+		//节点选择事件
+  		function onCheck(e,treeId,treeNode){
+		  var treeObj=$.fn.zTree.getZTreeObj("treeDemo"),
+		  nodes=treeObj.getCheckedNodes(true),
+		  v="";
+		  for(var i=0;i<nodes.length;i++){
+		    v+=nodes[i].id + ",";
+// 		    alert(nodes[i].id); //获取选中节点的值
+		  }
+		  if (v.length > 0) {
+			 v = v.substring(0, v.length - 1);
+// 			 alert(v);
+		  }
+// 		  alert(v);
+		  $("#id_show").html(v);
+		}
+	
+    </script>
+    	
+</head>
+
+<body>
+	<div class="container" id="box">	
+		
+		<div class="row">
+			<div class="col-md-9">
+				<ul id="treeDemo" class="ztree"></ul>
+			</div>
+			<div class="col-md-3">
+				<p id="id_show" ></p>
+				<button type="button" class="btn btn-default" @click="checkedTree">  
+		       		  <span class="glyphicon glyphicon-list"></span> 获得目录id组
+		        </button>
+			</div>
+		</div>
+		
+		<div class="footer">
+			<iframe src="../views/footer.html" width="100%" frameborder="0" scrolling="no"></iframe>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>奇牟</title>
+
+	<link rel="shortcut icon" href="./ico/qm.png">
+	<link rel="stylesheet" type="text/css" href="./css/page.css">
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="./css/comm.css">
+	<script type="text/javascript" src="./js/jqury-1.7.2.js"></script>
+    <script type="text/javascript" src="./js/bootstrap.js"></script>
+	<script type="text/javascript" src="./js/vue.js"></script>
+	<script type="text/javascript" src="./js/vue-resource.js"></script>
+
+	<script>
+        window.onload=function(){
+			var newlist = new Vue({ 
+			  el: '#app', 
+			  data: { 
+			    current_page: 1, //当前页 
+			    pages: 20, //总页数 
+			    changePage:''//跳转页 
+			  }, 
+			  computed:{ 
+			     show:function(){ 
+			         return this.pages && this.pages !=1 
+			     }, 
+			     efont: function() { 
+			       if (this.pages <= 7) return false; 
+			       return this.current_page > 5 
+			     }, 
+			     indexs: function() { 
+			 
+			       var left = 1, 
+			         right = this.pages, 
+			         ar = []; 
+			       if (this.pages >= 7) { 
+			         if (this.current_page > 5 && this.current_page < this.pages - 4) { 
+			           left = Number(this.current_page) - 3; 
+			           right = Number(this.current_page) + 3; 
+			         } else { 
+			           if (this.current_page <= 5) { 
+			             left = 1; 
+			             right = 7; 
+			           } else { 
+			             right = this.pages; 
+			 
+			             left = this.pages - 6; 
+			           } 
+			         } 
+			       } 
+			       while (left <= right) { 
+			         ar.push(left); 
+			         left++; 
+			       } 
+			       return ar; 
+			     }, 
+			   }, 
+			  methods: { 
+			    jumpPage: function(id) {
+			      var reg = /^[1-9]\d*$/
+			      if(id==''||!reg.test(id)||id>this.pages){//校验跳转页是否合法
+			      	alert('请填写一个不大于 '+this.pages+' 的整数');
+			      	return;
+			      }
+			      alert(id);//加载数据操作
+			      this.current_page = id;
+			      
+			    }, 
+			  }, 
+			});
+        };
+    </script>	
+</head>
+
+<body>
+	<div class="container" id="box">
+		<div class="header">
+		   <ul class="nav nav-pills pull-right">
+		     <li class="active"><a href="#">Home</a></li>
+		     <li><a href="#">About</a></li>
+		     <li><a href="#">Contact</a></li>
+		     <li><a href="/logout">安全退出</a></li> 
+		   </ul>
+		   <h3 class="text-muted">Patent project</h3>
+		 </div>
+		 
+                     <div id="app"> 
+                    
+					  <div> 
+					    <div class="page"  v-show="show"> 
+					      <div class="pagelist"> 
+					        <span class="jump" v-show="current_page>1" @click="current_page--,jumpPage(current_page)">上一页</span> 
+					        <span v-show="current_page>5" class="jump" @click="jumpPage(1)">1</span> 
+					        <span class="ellipsis"  v-show="efont">...</span> 
+					        <span class="jump" v-for="num in indexs" :class="{bgprimary:current_page==num}" @click="jumpPage(num)">{{num}}</span> 
+					        <span class="ellipsis"  v-show="efont&&current_page<pages-4">...</span> 
+					 
+					        <span class="jump" v-show="current_page<pages" @click="current_page++,jumpPage(current_page)">下一页</span> 
+					        <span v-show="current_page<pages-1" class="jump" class="jump" @click="jumpPage(pages)">末尾页{{pages}}</span> 
+					 
+					        <span class="jumppoint">跳转到：</span> 
+					        <span class="jumpinp"><input type="text" v-model="changePage"></span> 
+					        <span class="jump gobtn" @click="jumpPage(changePage)">GO</span> 
+					        <span class="jumpinp"> 第{{current_page}}页     共{{pages}}页</span> 
+					      </div> 
+					    </div> 
+					  </div> 
+					</div>
+                
+
+		<div class="footer">
+			<iframe src="./footer.html" width="100%" frameborder="0" scrolling="no"></iframe>
+		</div>
+
+	</div>
+
+
+</body>
+</html>

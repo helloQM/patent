@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>奇牟nav2</title>
+	
+    <link rel="shortcut icon" href="../views/ico/qm.png">
+	<link rel="stylesheet" type="text/css" href="../views/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../views/css/comm.css">
+	<link rel="stylesheet" type="text/css" href="../views/css/nav2.css">
+	<script type="text/javascript" src="../views/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../views/js/bootstrap.js"></script>
+	<script type="text/javascript" src="../views/js/vue.js"></script>
+	<script type="text/javascript" src="../views/js/vue-resource.js"></script>
+	
+	<script type=text/javascript>
+		$(document).ready(function(){
+			var vue = new Vue({
+	            el:'#box',
+	            data:{
+	            	msg:'<li><a href="#" class="arrow" target="_blank">你的网站</a></li>',
+	            	myName:'',
+					zNodes:[] // 菜单节点的数据
+	            },
+	            ready:function(){
+// 					this.loadMenuByRole();
+					this.test();
+		        },
+	            methods:{
+	            	triggerFunc:function(){
+	            		$('#webmenu li').hover(function(){
+							$(this).children('ul').stop(true,true).show(200);
+						},function(){
+				// 			$(this).children('ul').stop(true,true).hide(200);
+				// 			$(this).children('ul').stop(false,false).hide(200);
+							$(this).children('ul').stop().hide(200);
+				// 			$(this).children('ul').hide(200);
+						});
+						
+						$('#webmenu li').hover(function(){
+							$(this).children('div').stop(true,true).show();
+						},function(){
+							$(this).children('div').stop(true,true).hide();
+						});
+	            	},
+	            	test:function(){
+						this.$http.post('/navDel',{
+	                            nullParam:''//没用的参数，用来生成&。
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+// 	                            alert(res.data);
+		                        this.myName = res.data.userName;
+								
+								for(var i = 0;i<res.data.navList.length;i++){
+	// 						    	alert(JSON.stringify(res.data.navList[i]));//jquery解析json格式数据为string
+									this.zNodes.push(res.data.navList[i]);
+								}
+								generalNav(this.zNodes);
+								
+								this.triggerFunc();
+	                        },function(res){
+	                            //alert("error : "+res.status);//error
+	                        });
+	            	},
+					loadMenuByRole:function(){
+	//                 		alert(JSON.stringify(this.zNodes));
+	                		this.$http.post('/listAllAuthority',{
+	                            nullParam:''//没用的参数，用来生成&。
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+		                        this.zNodes = [];//清空
+// 	                            alert(res.data.length);
+// 	                            alert(JSON.stringify(res.data[0]));
+// 	                            alert(res.data[0].avalue);
+								for(var i = 0;i<res.data.length;i++){
+	// 						    	alert(JSON.stringify(res.data[i]));//jquery解析json格式数据为string
+									this.zNodes.push(res.data[i]);
+								}
+// 								alert(JSON.stringify(this.zNodes));
+	                        },function(res){
+	                            //alert("error : "+res.status);//error
+	                        });
+	                }
+	            }
+	        });
+	        
+	        
+		});
+		
+		function generalNav(autO){
+		
+		/* {"id":1,
+		"pId":0,
+		"name":"name1",
+		"path":"path"}
+		*/
+		
+// 			alert(autO.length);
+// 			alert(autO[0]);//jquery解析json格式数据为string
+// 			alert(JSON.stringify(autO[0]));//jquery解析json格式数据为string
+			
+// 			alert(autO[0].avalue);
+			
+			var menu1index = 1;var manu1 = new Array();//一级目录数组
+			var menu2index = 0;var manu2 = new Array();//二级目录数组
+			var menu3index = 0;var manu3 = new Array();//三级目录数组
+			
+			manu1[0]='<li><a href="/" style=" border:none;" target="_self"> <span class="glyphicon glyphicon-home"> 返回首页  </span></a></li>';
+			for(var i = 0;i<autO.length;i++){
+				if(autO[i].id.toString().length == 1){
+					manu1[menu1index++]=$('<li id="'+autO[i].id+'"><a>'+autO[i].name+'</a></li>');
+				}
+				if(autO[i].id.toString().length == 2){
+					manu2[menu2index++]='<li id="'+autO[i].id+'"><a class="arrow">'+autO[i].name+'</a></li>';
+				}
+				if(autO[i].id.toString().length == 3){
+					manu3[menu3index++]='<li id="'+autO[i].id+'"><a href="'+autO[i].path+'">'+autO[i].name+'</a></li>';
+				}
+			}
+			
+// 			alert(manu1.length);
+			var node2 = $('<ul id="subMgm" class="second-menu"></ul>');
+			var node3 = $('<ul class="third-menu"></ul>');
+			
+			$("#1").append(node2);
+			
+			for(var i = 0;i<manu1.length;i++){
+				$("#webmenu").append(manu1[i]);
+				if(i>=0){
+					$("#"+i).append(node2);
+// 					manu1[i].append(node2);
+// 					alert($(manu1[i]).attr("id"));
+// 					alert($($("#"+i)).attr("id"));
+				}
+			}
+			
+// 			$("#2").append(node2);
+			
+			for(var i = 0;i<manu2.length;i++){
+				if(i>=3){
+					break;
+				}
+				
+				//alert($(manu2[i]).attr("id"));//获得节点的ID
+// 				node2.append(manu2[i]);
+			}
+			
+			for(var i = 0;i<manu3.length;i++){
+// 				alert($(manu3[i]).attr("id"));//获得节点的ID
+			}
+			
+// 			$("#3").append(node2);
+			
+		}
+		
+	/* $(function(){
+		
+	}); */
+</script>
+
+</head>
+<body>
+<div class="container" id="box">
+
+{{msg}}
+
+
+<ul id="webmenu" class="first-menu container navbar-fixed-top">
+  
+  
+  
+  <p class="navbar-right text-muted">当前登录账号：{{myName}}</p>  
+  <button type="button" class="btn btn-default navbar-right">  
+      <span class="glyphicon glyphicon-off"></span> 安全退出   
+   </button> 
+</ul>
+
+ <hr />
+
+
+<!-- <ul id="webmenu" class="first-menu container navbar-fixed-top">
+  <li><a href="/" style=" border:none;" target="_self"> <span class="glyphicon glyphicon-home"></span> 返回首页  </a></li>
+  <li><a href="#" target="_self">建立网站</a>
+     <ul id="subMgm" class="second-menu">
+    	<li><a href="#" class="arrow" target="_self">域名空名空间空间</a>
+	        <ul class="third-menu">
+	          <li><a href="#">fatcow</a></li>
+	          <li><a href="#">justhost</a></li>
+	        </ul>
+        </li>
+       <li><a href="#" >CSS 模版</a></li>
+      </ul>
+  </li>
+  <li><a href="#" target="_self">工作生活</a>
+    <ul id="subMgm" class="second-menu">
+      <li><a href="#" class="arrow" target="_self">搜索</a>
+        <ul class="third-menu">
+          <li><a href="#">百度</a></li>
+          <li><a href="#">Google</a></li>
+        </ul>
+      </li>
+      <li><a href="#" class="arrow" target="_self">新闻</a>
+        <ul class="third-menu">
+          <li><a href="#">新浪</a></li>
+          <li><a href="#">腾讯</a></li>
+        </ul>
+      </li>
+      <li><a href="#" class="arrow" target="_self">招聘</a>
+        <ul class="third-menu">
+          <li><a href="#">中华英才网</a></li>
+          <li><a href="#">前程无忧</a></li>
+        </ul>
+      </li>
+      <li><a href="#" class="arrow" target="_self">网赚</a>
+        <ul class="third-menu">
+          <li><a href="#">威客中国</a></li>
+        </ul>
+      </li>
+      <li><a href="#" class="arrow" target="_self">购物</a>
+        <ul class="third-menu">
+          <li><a href="#">网站</a></li>
+          <li><a href="#">快递公司</a></li>
+          <li><a href="#" class="arrow" target="_self">电子支付</a>
+            <ul class="fourth-menu">
+              <li><a href="#">支付宝</a></li>
+              <li><a href="#">快钱</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#" class="arrow" target="_self">科技</a>
+        <ul class="third-menu">
+          <li><a href="#">专利之家</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#" class="arrow" target="_self">休闲娱乐</a>
+    <ul id="subMgm" class="second-menu">
+      <li><a href="#" class="arrow" target="_self">游戏</a>
+        <ul class="third-menu">
+          <li><a href="#">网络游戏</a></li>
+          <li><a href="#">17173</a></li>
+        </ul>
+      </li>
+      <li><a href="#" class="arrow" target="_self">电影</a>
+        <ul class="third-menu">
+          <li><a href="#">迅雷看看</a></li>
+          <li><a href="#">狗狗搜索</a></li>
+          <li><a href="#">电驴下载</a></li>
+          <li><a href="#">80s手机电影</a></li>
+        </ul>
+      </li>
+      <li><a href="#" class="arrow" target="_self">视频</a>
+        <ul class="third-menu">
+          <li><a href="#">优酷</a></li>
+          <li><a href="#">土豆</a></li>
+          <li><a href="#">酷6</a></li>
+          <li><a href="#">六间房</a></li>
+          <li><a href="#">56</a></li>
+        </ul>
+      </li>
+      <li><a href="#" class="arrow" target="_self">音乐</a>
+        <ul class="third-menu">
+          <li><a href="#">百度-MP3</a></li>
+          <li><a href="#">QQ163</a></li>
+          <li><a href="#">一听音乐</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#" class="arrow" target="_blank">我的网站</a></li>
+  <p class="navbar-right text-muted">当前登录账号：******</p>  
+	
+  <button type="button" class="btn btn-default navbar-right">  
+      <span class="glyphicon glyphicon-off"></span> 安全退出   
+   </button> 
+</ul> -->
+
+ v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+
+不会显示，直到编译结束。
+v-once
+不需要表达式
+		
+		
+
+		<div class="footer">
+			<iframe src="../views/footer.html" width="100%" frameborder="0" scrolling="no"></iframe>
+		</div>
+		
+		
+</div>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>奇牟</title>
+
+	<link rel="shortcut icon" href="../ico/qm.png">
+	<link rel="stylesheet" type="text/css" href="../css/grid.css">
+	<link rel="stylesheet" type="text/css" href="../css/page.css">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../css/comm.css">
+<!-- 	<link rel="stylesheet" type="text/css" href="../css/bootstrap-select.css"> -->
+	<script type="text/javascript" src="../js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/vue-resource.js"></script>
+	<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
+	
+	<script>
+        window.onload=function(){
+            var v = new Vue({
+                el:'#box',
+                data:{
+                    myData:[],
+                    totalNum:'',//总条数 
+                    totalPage:'',//总页数 
+                    currentPage:1,//当前页 
+                    changePage:'',//跳转页
+                    pageSize:'10', //一页的容量
+                    serviceType:'-1',
+                    serviceCode:'',
+                    serviceName:'',
+                    priceNumMin:'',
+                    priceNumMax:'',
+                    loadingFlag:false
+                    
+                },
+                computed:{ 
+				     show:function(){ 
+				         return this.totalPage && this.totalPage !=1 
+				     }, 
+				     efont: function() { 
+				       if (this.totalPage <= 7) return false; 
+				       return this.currentPage > 5 
+				     }, 
+				     indexs: function() { 
+				 
+				       var left = 1, 
+				         right = this.totalPage, 
+				         ar = []; 
+				       if (this.totalPage >= 7) { 
+				         if (this.currentPage > 5 && this.currentPage < this.totalPage - 4) { 
+				           left = Number(this.currentPage) - 3; 
+				           right = Number(this.currentPage) + 3; 
+				         } else { 
+				           if (this.currentPage <= 5) { 
+				             left = 1; 
+				             right = 7; 
+				           } else { 
+				             right = this.totalPage; 
+				 
+				             left = this.totalPage - 6; 
+				           } 
+				         } 
+				       } 
+				       while (left <= right) { 
+				         ar.push(left); 
+				         left++; 
+				       } 
+				       return ar; 
+				     }, 
+			   }, 
+                created:function(){
+//                 	this.init();
+                },
+                ready:function(){
+	                this.loadData();
+	            },
+                methods:{
+                    loadData:function(){
+                    	this.loadingFlag = true;
+                    	this.myData = [];//清空
+                        this.$http.post('/listServicePrice',{
+                            currentPage: this.currentPage,
+							serviceType: this.serviceType,
+							serviceCode: this.serviceCode,
+							cityCode: "-1",
+							serviceBak: "-1",
+							serviceID: "-1",
+							serviceName: this.serviceName,
+							priceNumMax: this.priceNumMax,
+							priceNumMin: this.priceNumMin
+                        },{
+                            emulateJSON:true
+                        }).then(function(res){//success
+//                             alert(res.data.servicePriceTotalNum);
+//                             alert(res.data.listServicePrice.length);
+							this.loadingFlag = false;
+							this.totalNum = res.data.servicePriceTotalNum;
+							this.totalPage = parseInt(((this.totalNum-1)/this.pageSize)+1);
+							for(var i = 0;i<res.data.listServicePrice.length;i++){
+// 						    	alert(JSON.stringify(res.data.listServicePrice[i]));//jquery解析json格式数据为string
+							    this.myData.push(res.data.listServicePrice[i]); 
+							}
+                        },function(res){
+                            alert("error : "+res.status);//error
+                        });
+                    },
+                    jumpPage: function(id) {
+					      var reg = /^[1-9]\d*$/
+					      if(id==''||!reg.test(id)||id>this.totalPage){//校验跳转页是否合法
+					      	alert('请填写一个不大于 '+this.totalPage+' 的整数');
+					      	return;
+					      }
+// 					      alert(id);//加载数据操作
+					      this.currentPage = id;
+					      
+					      this.loadData();
+					},
+                    init(){
+				        alert(1);
+				    },
+				    testJqueryFunc(){
+// 						alert(this.totalNum);	    
+						$.post("/listServicePrice",
+							{
+								//{"pageNum": "1","serviceType": "12","serviceCode": "1","cityCode": "610100","serviceBak": "递交专利","serviceID": "1","serviceName": "服务名称","priceNumMax": 4567,"priceNumMin": 123}
+								"q":"1",
+	    						
+				  			},function(result,status){
+				  			
+				  				alert(result+status);
+// 								var jsonO = JSON.parse(result);//jquery解析string为json格式数据
+	// 						    alert(jsonO);
+							    alert(jsonO.length);
+	// 							alert(JSON.stringify(jsonO[0]));
+	// 						    for(var i = 0;i<jsonO.length;i++){
+	// 						    	alert(JSON.stringify(jsonO[i]));//jquery解析json格式数据为string
+	// 							    this.myData.push(JSON.stringify(jsonO[i])); 
+	// 							}
+					  		}
+					  	);
+				    }
+                }
+            });
+        };
+    </script>	
+</head>
+
+<body>
+
+
+	<div class="container" id="box">
+		<div id="loading" class="loading" v-show=loadingFlag>加载中...</div>
+		<div class="header">
+		   <ul class="nav nav-pills pull-right">
+		     <li class="active"><a href="#">Home</a></li>
+		     <li><a href="#">About</a></li>
+		     <li><a href="#">Contact</a></li>
+		     <li><a href="/logout">安全退出</a></li> 
+		   </ul>
+		   <h3 class="text-muted">Patent project</h3>
+		 </div>
+		 
+<!-- 		 <form> -->
+<!--   <div class="form-group"> -->
+<!--     <label for="exampleInputEmail1">Email address</label> -->
+<!--     <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email"> -->
+<!--   </div> -->
+<!--   <div class="form-group"> -->
+<!--     <label for="exampleInputPassword1">Password</label> -->
+<!--     <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"> -->
+<!--   </div> -->
+<!--   <div class="form-group"> -->
+<!--     <label for="exampleInputFile">File input</label> -->
+<!--     <input type="file" id="exampleInputFile"> -->
+<!--     <p class="help-block">Example block-level help text here.</p> -->
+<!--   </div> -->
+<!--   <div class="checkbox"> -->
+<!--     <label> -->
+<!--       <input type="checkbox"> Check me out -->
+<!--     </label> -->
+<!--   </div> -->
+<!--   <button type="submit" class="btn btn-default">Submit</button> -->
+<!-- </form> -->
+
+<!-- 		<form class="form-inline" role="form"> -->
+<!-- 		    <div class="form-group"> -->
+<!-- 		        <label for="f1">账号</label> -->
+<!-- 		        <input type="text" id="f1" class="form-control" placeholder="请输入账号"/> -->
+<!-- 		    </div> -->
+<!-- 		    <div class="form-group"> -->
+<!-- 		        <label for="f2">密码</label> -->
+<!-- 		        <input type="password" id="f2" class="form-control" placeholder="请输入密码"/> -->
+<!-- 		    </div> -->
+<!-- 		    <div class="form-group"> -->
+<!-- 		        <label for="f3" class="sr-only">邮箱</label> -->
+<!-- 		        <input type="email" class="form-control" id="f3" placeholder="请输入邮箱"/> -->
+<!-- 		    </div> -->
+<!-- 		    <div class="form-group"> -->
+<!-- 		        <label for="f4" class="sr-only">邮箱秘密</label> -->
+<!-- 		        <input type="password" id="f4" placeholder="请输入邮箱密码" class="form-control"/> -->
+<!-- 		    </div> -->
+<!-- 		    <div class="checkbox"> -->
+<!-- 		        <label> -->
+<!-- 		            <input type="checkbox"/>记住密码 -->
+<!-- 		        </label> -->
+<!-- 		    </div> -->
+<!-- 		    <button type="submit" class="btn btn-danger">进入</button> -->
+<!-- 		</form> -->
+		<form class="form-inline form-group-sm" role="form">
+		    <div class="form-group">
+		 		<label for="id_serviceCode">服务编号:</label>
+		 		<input type="text" class="form-control" id="id_serviceCode" v-model="serviceCode" placeholder="服务编号" />
+		 	</div>
+		    <div class="form-group">
+		 		<label for="id_serviceName">服务名称:</label>
+		 		<input type="text" class="form-control" id="id_serviceName" v-model="serviceName" placeholder="服务名称" />
+		 	</div>
+		    <div class="form-group ">
+		        <label>服务类型:</label>
+				<select class="selectpicker form-control" data-style="btn-info"  title="服务类型" v-model="serviceType">
+					<option value="-1" selected="selected">--请选择--</option>
+					<option value="专利基本服务">专利基本服务</option>
+					<option value="专利流程服务">专利流程服务</option>
+					<option value="专利大数据分析服务">专利大数据分析服务</option>
+					<option value="专利套餐服务">专利套餐服务</option>
+					<option value="国外专利服务">国外专利服务</option>
+					<option value="商标服务">商标服务</option>
+					<option value="版权服务">版权服务</option>
+					<option value="项目服务">项目服务</option>
+				 </select>
+		    </div>
+		    
+		    <div class="form-group">
+		 		<label for="id_priceNumMin">价格:</label>
+		 		<input type="text" class="form-control" id="id_priceNumMin" v-model="priceNumMin" placeholder="下限价格" />
+		 	</div>
+		 	<div class="form-group">
+		 		<label for="id_priceNumMax">--</label>
+		 		<input type="text" class="form-control" id="id_priceNumMax" v-model="priceNumMax" placeholder="上限价格" />
+		 	</div>
+		 	<div class="form-group">
+		    	<button type="submit" class="btn btn-info"  @click="currentPage=1,loadData()">查询</button>
+		    </div>
+		</form>
+		
+		
+		 <table class="table table-bordered table-hover">
+            <caption class="h3 text-info">服务价格列表</caption>
+            
+            <tr class="text-danger">
+                <th class="text-center">序号</th>
+                <th class="text-center">服务编码</th>
+                <th class="text-center">服务名称</th>
+                <th class="text-center">服务类型</th>
+                <th class="text-center">服务介绍</th>
+                <th class="text-center">城市编码</th>
+                <th class="text-center">价格下限</th>
+                <th class="text-center">价格上限</th>
+            </tr>
+            <tr class="text-center" v-for="item in myData">
+                <td>{{$index+1}}</td>
+                <td>{{item.serviceCode}}</td>
+                <td>{{item.serviceName}}</td>
+                <td>{{item.serviceType}}</td>
+                <td>{{item.serviceBak}}</td>
+                <td>{{item.cityName}}</td>
+                <td>{{item.priceNumMin}}</td>
+                <td>{{item.priceNumMax}}</td>
+            </tr>
+            <tr v-show="false">
+                <td colspan="8" class="text-center text-muted">
+                      
+                </td>
+            </tr>
+            <tr v-show="myData.length==0">
+                <td colspan="8" class="text-center text-muted">
+                    <p>暂无数据....</p>
+                </td>
+            </tr>
+        </table>
+		<div> 
+		    <div class="page"  v-show="show"> 
+		      <div class="pagelist"> 
+		        <span class="jump" v-show="currentPage>1" @click="currentPage--,jumpPage(currentPage)">上一页</span> 
+		        <span v-show="currentPage>5" class="jump" @click="jumpPage(1)">1</span> 
+		        <span class="ellipsis"  v-show="efont">...</span> 
+		        <span class="jump" v-for="num in indexs" :class="{bgprimary:currentPage==num}" @click="jumpPage(num)">{{num}}</span> 
+		        <span class="ellipsis"  v-show="efont&&currentPage<totalPage-4">...</span> 
+		 
+		        <span class="jump" v-show="currentPage<totalPage" @click="currentPage++,jumpPage(currentPage)">下一页</span> 
+		        <span v-show="currentPage<totalPage-1" class="jump" class="jump" @click="jumpPage(totalPage)">末页{{totalPage}}</span> 
+		 
+		        <span class="jumppoint">跳转到：</span> 
+		        <span class="jumpinp"><input type="text" v-model="changePage"></span> 
+		        <span class="jump gobtn" @click="jumpPage(changePage)">GO</span> 
+		        <span class="jumpinp"> 第{{currentPage}}页     共{{totalPage}}页 </span> 
+		      </div> 
+		    </div> 
+		  </div>
+					  
+					  
+		<div class="footer">
+			<iframe src="../footer.html" width="100%" frameborder="0" scrolling="no"></iframe>
+		</div>
+
+	</div>
+
+
+</body>
+</html>

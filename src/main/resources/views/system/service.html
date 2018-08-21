@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>奇牟</title>
+
+	<link rel="shortcut icon" href="../ico/qm.png">
+	<link rel="stylesheet" type="text/css" href="../css/grid.css">
+	<link rel="stylesheet" type="text/css" href="../css/page.css">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/comm.css">
+<!-- 	<link rel="stylesheet" type="text/css" href="../css/bootstrap-select.css"> -->
+	<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
+	<script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../js/comm.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/vue-resource.js"></script>
+	<style type="text/css">
+		
+	</style>
+	<script>
+        window.onload=function(){
+            var v = new Vue({
+                el:'#box',
+                data:{
+                    myData:[],
+                    totalNum:'',//总条数 
+                    totalPage:'',//总页数 
+                    currentPage:1,//当前页 
+                    changePage:'',//跳转页
+                    pageSize:'10', //一页的容量
+                    serviceType:'-1',
+                    serviceCode:'',
+                    serviceName:'',
+                    priceNumMin:'',
+                    priceNumMax:'',
+                    loadingFlag:false,//等待条显示或隐藏标识
+                    edit_serviceID:'',
+					edit_cityCode:'',
+					edit_cityName:'',
+					edit_serviceCode:'',
+					edit_serviceName:'',
+					edit_serviceBak:'',
+					edit_serviceType:'',
+					edit_priceNumMin:'',
+					edit_priceNumMax:'',
+					area_province:[],//省
+					area_city:[],//市
+					area_xian:[],//县
+					current_dependArea:'100000',//当前的pid
+					
+					show_province:true,//省份下拉框显示或隐藏标识
+					show_city:false,//城市下拉框显示或隐藏标识
+					show_xian:false,//区县下拉框显示或隐藏标识
+					show_area:false//编辑窗口的服务区域项显示或隐藏标识
+                },
+                computed:{ 
+				     show:function(){ 
+				         return this.totalPage && this.totalPage !=1 
+				     }, 
+				     efont: function() { 
+				       if (this.totalPage <= 7) return false; 
+				       return this.currentPage > 5 
+				     }, 
+				     indexs: function() { 
+				 
+				       var left = 1, 
+				         right = this.totalPage, 
+				         ar = []; 
+				       if (this.totalPage >= 7) { 
+				         if (this.currentPage > 5 && this.currentPage < this.totalPage - 4) { 
+				           left = Number(this.currentPage) - 3; 
+				           right = Number(this.currentPage) + 3; 
+				         } else { 
+				           if (this.currentPage <= 5) { 
+				             left = 1; 
+				             right = 7; 
+				           } else { 
+				             right = this.totalPage; 
+				 
+				             left = this.totalPage - 6; 
+				           } 
+				         } 
+				       } 
+				       while (left <= right) { 
+				         ar.push(left); 
+				         left++; 
+				       } 
+				       return ar; 
+				     }, 
+			   }, 
+                created:function(){
+//                 	this.init();
+                },
+                ready:function(){
+	                this.loadData();
+	            },
+                methods:{
+                    loadData:function(){//加载页面主题内容
+                    	this.loadingFlag = true;
+                    	this.myData = [];//清空
+                        this.$http.post('/listServicePrice',{
+                            currentPage: this.currentPage,
+							serviceType: this.serviceType,
+							serviceCode: this.serviceCode,
+							cityCode: "-1",
+							serviceBak: "-1",
+							serviceID: "-1",
+							serviceName: this.serviceName,
+							priceNumMax: this.priceNumMax,
+							priceNumMin: this.priceNumMin
+                        },{
+                            emulateJSON:true
+                        }).then(function(res){//success
+//                             alert(res.data.servicePriceTotalNum);
+//                             alert(res.data.listServicePrice.length);
+							this.loadingFlag = false;
+							this.totalNum = res.data.servicePriceTotalNum;
+							this.totalPage = parseInt(((this.totalNum-1)/this.pageSize)+1);
+							for(var i = 0;i<res.data.listServicePrice.length;i++){
+// 						    	alert(JSON.stringify(res.data.listServicePrice[i]));//jquery解析json格式数据为string
+							    this.myData.push(res.data.listServicePrice[i]); 
+							}
+                        },function(res){
+                            //alert("error : "+res.status);//error
+                        });
+                    },
+                    
+                    jumpPage: function(id) {//页面跳转
+					      var reg = /^[1-9]\d*$/
+					      if(id==''||!reg.test(id)||id>this.totalPage){//校验跳转页是否合法
+					      	alert('请填写一个不大于 '+this.totalPage+' 的整数');
+					      	return;
+					      }
+// 					      alert(id);//加载数据操作
+					      this.currentPage = id;
+					      
+					      this.loadData();
+					},
+					
+					provinceAreaFunc:function(){
+						if(this.area_province.length!=0){
+                    	  return;
+                        }
+						
+                        this.$http.post('/listCityCode',{
+                            pid: this.current_dependArea,
+                            nullParam:''//没用的参数，用来生成&。
+                        },{
+                            emulateJSON:true
+                        }).then(function(res){//success
+	                        this.area_province = [];//清空
+                            
+							for(var i = 0;i<res.data.length;i++){
+// 						    	alert(JSON.stringify(res.data[i]));//jquery解析json格式数据为string
+								this.area_province.push(res.data[i]);
+							}
+                        },function(res){
+                            //alert("error : "+res.status);//error
+                        });
+                    },
+                    cityAreaFunc:function(ele){
+                    	if(ele.target.value==-1){
+                    		this.area_city = [];//清空
+                    		return;
+                    	}
+// 						alert(ele.target.value);
+						this.show_city=true;
+						this.edit_cityCode = ele.target.value;
+						this.current_dependArea=ele.target.value;
+						
+                        this.$http.post('/listCityCode',{
+                            pid: this.current_dependArea,
+                            nullParam:''//没用的参数，用来生成&。
+                        },{
+                            emulateJSON:true
+                        }).then(function(res){//success
+	                        this.area_city = [];//清空
+                            
+							for(var i = 0;i<res.data.length;i++){
+// 						    	alert(JSON.stringify(res.data[i]));//jquery解析json格式数据为string
+								this.area_city.push(res.data[i]);
+							}
+                        },function(res){
+                            //alert("error : "+res.status);//error
+                        });
+                    },
+                    xianAreaFunc:function(ele){
+// 						alert(ele.target.value);
+						if(ele.target.value==-1){
+                    		this.area_xian = [];//清空
+                    		return;
+                    	}
+						this.show_xian=true;
+						this.edit_cityCode = ele.target.value;
+						this.current_dependArea=ele.target.value;
+                        this.$http.post('/listCityCode',{
+                            pid: this.current_dependArea,
+                            nullParam:''//没用的参数，用来生成&。
+                        },{
+                            emulateJSON:true
+                        }).then(function(res){//success
+	                        this.area_xian = [];//清空
+                            
+							for(var i = 0;i<res.data.length;i++){
+// 						    	alert(JSON.stringify(res.data[i]));//jquery解析json格式数据为string
+								this.area_xian.push(res.data[i]);
+							}
+                        },function(res){
+                            //alert("error : "+res.status);//error
+                        });
+                    },
+                    lastAreaFunc:function(ele){
+// 						alert(ele.target.value);
+// 						this.current_dependArea=ele.target.value;
+						this.edit_cityCode = ele.target.value;
+                    },
+                    init(){
+				        alert(1);
+				    },
+				    
+				    testJqueryFunc(){
+// 						alert(this.totalNum);	    
+						$.post("/listServicePrice",
+							{
+								//{"pageNum": "1","serviceType": "12","serviceCode": "1","cityCode": "610100","serviceBak": "递交专利","serviceID": "1","serviceName": "服务名称","priceNumMax": 4567,"priceNumMin": 123}
+								"q":"1",
+	    						
+				  			},function(result,status){
+				  			
+				  				alert(result+status);
+// 								var jsonO = JSON.parse(result);//jquery解析string为json格式数据
+	// 						    alert(jsonO);
+							    alert(jsonO.length);
+	// 							alert(JSON.stringify(jsonO[0]));
+	// 						    for(var i = 0;i<jsonO.length;i++){
+	// 						    	alert(JSON.stringify(jsonO[i]));//jquery解析json格式数据为string
+	// 							    this.myData.push(JSON.stringify(jsonO[i])); 
+	// 							}
+					  		}
+					  	);
+				    },
+				    checkedAline(id,index){//弹出修改服务价格窗口
+// 				    	alert(id+":"+index);
+// 						alert(this.myData[index].serviceID);
+				    	$('#myModal').modal('toggle');
+				    	$("#myModalLabel").text("编辑服务价格");
+				    	
+				    	//设置待编辑的各项的值
+				    	this.edit_serviceID=this.myData[index].serviceID;
+						this.edit_cityCode=this.myData[index].cityCode;
+						this.edit_cityName=this.myData[index].cityName;
+						this.edit_serviceCode=this.myData[index].serviceCode;
+						this.edit_serviceName=this.myData[index].serviceName;
+						this.edit_serviceBak=this.myData[index].serviceBak;
+						this.edit_serviceType=this.myData[index].serviceType;
+						this.edit_priceNumMin=this.myData[index].priceNumMin;
+						this.edit_priceNumMax=this.myData[index].priceNumMax;
+						
+						this.show_area=true;
+						this.show_province=false;
+						this.show_city=false;
+						this.show_xian=false;
+						
+						$("#myModal").css("height","600px");//设置弹出框的高度
+				    	
+// 				    	window.open("editDemo.html","_blank","width=200,height=100");
+// 				    	openwindow("editDemo.html","服务价格编辑",400,600);
+				    },
+				    addServiceFunc(){//弹出新增服务价格窗口
+				    	$('#myModal').modal('toggle');
+// 				    	this.edit_serviceID='';
+						this.edit_cityCode='';
+						this.edit_serviceCode='';
+						this.edit_serviceName='';
+						this.edit_serviceBak='';
+						this.edit_serviceType='-1';
+						this.edit_priceNumMin='';
+						this.edit_priceNumMax='';
+						
+						this.provinceAreaFunc();
+						this.show_province=true;
+						this.show_area=false;
+						this.show_city=false;
+						this.show_xian=false;
+						
+						$("#myModal").css("height","600px");//设置弹出框的高度
+				    	$("#myModalLabel").text("新增服务价格");
+				    	
+				    },
+				    submitFunc:function(){
+				    	if(this.edit_priceNumMax<this.edit_priceNumMin){
+				    		alert("上限报价不能小于下线报价");
+				    		return;
+				    	}
+				        if($("#myModalLabel").text().indexOf("编辑") != -1){
+// 				       		alert("修改成功");
+
+							this.loadingFlag = true;
+	                        this.$http.post('/updateServicePrice',{
+// 								serviceType: this.edit_serviceType,
+// 								serviceCode: this.edit_serviceCode,
+// 								cityCode: this.edit_cityCode,
+								serviceBak: this.edit_serviceBak,
+								serviceID: this.edit_serviceID,
+								serviceName: this.edit_serviceName,
+								priceNumMax: this.edit_priceNumMax,
+								priceNumMin: this.edit_priceNumMin
+								
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+	//                             alert(res.data.servicePriceTotalNum);
+	//                             alert(res.data.listServicePrice.length);
+								this.loadingFlag = false;
+// 								alert("添加成功");
+								alert(res.data.msg);
+								this.loadData();
+	                        },function(res){
+	                            alert(res.data.msg+" : "+res.status);//error
+	                        });
+				        }
+				    	
+				    	if($("#myModalLabel").text().indexOf("新") != -1){
+				    	
+					    	this.loadingFlag = true;
+	                        this.$http.post('/addServicePrice',{
+								serviceType: this.edit_serviceType,
+								serviceCode: this.edit_serviceCode,
+								cityCode: this.edit_cityCode,
+								serviceBak: this.edit_serviceBak,
+								serviceID: guid(),
+								serviceName: this.edit_serviceName,
+								priceNumMax: this.edit_priceNumMax,
+								priceNumMin: this.edit_priceNumMin
+								
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+	//                             alert(res.data.servicePriceTotalNum);
+	//                             alert(res.data.listServicePrice.length);
+								this.loadingFlag = false;
+// 								alert("添加成功");
+								alert(res.data.msg);
+								this.loadData();
+								
+	                        },function(res){
+	                            alert(res.data.msg+" : "+res.status);//error
+	                        });
+                        
+// 				    		alert("添加成功");
+				    	}
+				    	
+				    	$('#myModal').modal('toggle');
+				    	
+				    }
+				    
+                }
+            });
+            
+            $(function () { 
+				$("[data-toggle='popover']").popover();
+			});
+			$(function (){
+				$("a").tooltip();  //初始化	
+			});
+						
+            /* $(table).on('click-row.bs.table', function (e, row, element){
+				$('.success').removeClass('success');//去除之前选中的行的，选中样式
+				$(element).addClass('success');//添加当前选中的 success样式用于区别
+				var index = $('#formTempDetailTable_new').find('tr.success').data('index');//获得选中的行的id
+			}); */ 
+        };
+        
+        /* $(function() {
+		    $('#myModal').on('shown.bs.modal',
+		    function() {
+		        alert('嘿，我听说您喜欢模态框...');
+		    })
+		}); */
+    </script>	
+</head>
+
+<body>
+
+
+	<div class="container" id="box">
+		<div id="loading" class="loading" v-show=loadingFlag>加载中...</div>
+		<div class="header">
+		   <ul class="nav nav-pills pull-right">
+		     <li class="active"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+		     
+		     <li><a href="#">About</a></li>
+		     <li><a href="editDemo.html">服务价格</a></li>
+		     <li><a href="/gotoLogoutPage">安全退出</a></li> 
+		   </ul>
+		   <h3 class="text-muted">Patent project</h3>
+		 </div>
+		 
+<!-- 		 <form> -->
+<!--   <div class="form-group"> -->
+<!--     <label for="exampleInputEmail1">Email address</label> -->
+<!--     <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email"> -->
+<!--   </div> -->
+<!--   <div class="form-group"> -->
+<!--     <label for="exampleInputPassword1">Password</label> -->
+<!--     <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"> -->
+<!--   </div> -->
+<!--   <div class="form-group"> -->
+<!--     <label for="exampleInputFile">File input</label> -->
+<!--     <input type="file" id="exampleInputFile"> -->
+<!--     <p class="help-block">Example block-level help text here.</p> -->
+<!--   </div> -->
+<!--   <div class="checkbox"> -->
+<!--     <label> -->
+<!--       <input type="checkbox"> Check me out -->
+<!--     </label> -->
+<!--   </div> -->
+<!--   <button type="submit" class="btn btn-default">Submit</button> -->
+<!-- </form> -->
+
+<!-- 		<form class="form-inline" role="form"> -->
+<!-- 		    <div class="form-group"> -->
+<!-- 		        <label for="f1">账号</label> -->
+<!-- 		        <input type="text" id="f1" class="form-control" placeholder="请输入账号"/> -->
+<!-- 		    </div> -->
+<!-- 		    <div class="form-group"> -->
+<!-- 		        <label for="f2">密码</label> -->
+<!-- 		        <input type="password" id="f2" class="form-control" placeholder="请输入密码"/> -->
+<!-- 		    </div> -->
+<!-- 		    <div class="form-group"> -->
+<!-- 		        <label for="f3" class="sr-only">邮箱</label> -->
+<!-- 		        <input type="email" class="form-control" id="f3" placeholder="请输入邮箱"/> -->
+<!-- 		    </div> -->
+<!-- 		    <div class="form-group"> -->
+<!-- 		        <label for="f4" class="sr-only">邮箱秘密</label> -->
+<!-- 		        <input type="password" id="f4" placeholder="请输入邮箱密码" class="form-control"/> -->
+<!-- 		    </div> -->
+<!-- 		    <div class="checkbox"> -->
+<!-- 		        <label> -->
+<!-- 		            <input type="checkbox"/>记住密码 -->
+<!-- 		        </label> -->
+<!-- 		    </div> -->
+<!-- 		    <button type="submit" class="btn btn-danger">进入</button> -->
+<!-- 		</form> -->
+		<form class="form-inline form-group-sm" role="form">
+		    <div class="form-group">
+		 		<label for="id_serviceCode">服务编号:</label>
+		 		<input type="text" class="form-control" id="id_serviceCode" v-model="serviceCode" @keyup.13="currentPage=1,loadData()" placeholder="服务编号" />
+		 	</div>
+		    <div class="form-group">
+		 		<label for="id_serviceName">服务名称:</label>
+		 		<input type="text" class="form-control" id="id_serviceName" v-model="serviceName" @keyup.13="currentPage=1,loadData()" placeholder="服务名称" />
+		 	</div>
+		    <div class="form-group ">
+		        <label>服务类型:</label>
+				<select class="selectpicker form-control" data-style="btn-info"  title="服务类型" v-model="serviceType">
+					<option value="-1" selected="selected">--请选择--</option>
+					<option value="专利基本服务">专利基本服务</option>
+					<option value="专利流程服务">专利流程服务</option>
+					<option value="专利大数据分析服务">专利大数据分析服务</option>
+					<option value="专利套餐服务">专利套餐服务</option>
+					<option value="国外专利服务">国外专利服务</option>
+					<option value="商标服务">商标服务</option>
+					<option value="版权服务">版权服务</option>
+					<option value="项目服务">项目服务</option>
+				 </select>
+		    </div>
+		    
+		    <div class="form-group">
+		 		<label for="id_priceNumMin">价格:</label>
+		 		<input type="text" class="form-control" id="id_priceNumMin" v-model="priceNumMin" placeholder="下限价格" />
+		 	</div>
+		 	<div class="form-group">
+		 		<label for="id_priceNumMax">--</label>
+		 		<input type="text" class="form-control" id="id_priceNumMax" v-model="priceNumMax" placeholder="上限价格" />
+		 	</div>
+		 	<div class="form-group">
+		    	<button type="button" class="btn btn-info"  @click="currentPage=1,loadData()" >查询</button>
+<!-- 		    注意 ： 此处用submit会重复提交，导致数据错误
+		    	<button type="submit" class="btn btn-info"  @click="currentPage=1,loadData()">查询</button>
+		    	
+-->
+		    </div>
+		</form>
+           
+		 <table class="table table-bordered table-hover">
+            <caption class="h3 text-info">
+				<button type="button" class="btn btn-lg btn-info" data-placement="left" data-toggle="popover" title="温馨提示：" data-content="双击各行可编辑">服务价格列表:</button>
+				<!-- 按钮触发模态框 -->
+				<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" v-show="false">
+					新增服务
+				</button>
+				<button class="btn btn-primary btn-lg" data-toggle="modal" @click="addServiceFunc()">
+					新增服务
+				</button>
+				
+            </caption>
+            <tr class="text-danger warning">
+                <th class="text-center">序号</th>
+                <th class="text-center">服务编码</th>
+                <th class="text-center">服务名称</th>
+                <th class="text-center">服务类型</th>
+                <th class="text-center"><a href="#" title="鼠标悬浮在下面各项上可看详情" style="text-decoration:none;" data-placement="right">服务介绍</a></th>
+                <th class="text-center">城市编码</th>
+                <th class="text-center">价格下限</th>
+                <th class="text-center">价格上限</th>
+            </tr>
+<!--             vue 双击事件监听改变样式 -->
+<!-- https://www.cnblogs.com/songdongdong/p/6920827.html -->
+<!--             <tr class="text-center" v-for="item in myData" v-bind:class="{'active':ind === indexOne}" @dblclick="checkedAline(item.serviceID,index+1)"> -->
+            <tr class="text-center" v-for="item in myData"  @dblclick="checkedAline(item.serviceID,$index)">
+                <td>{{$index+1}}</td>
+                <td>{{item.serviceCode}}</td>
+                <td>{{item.serviceName}}</td>
+                <td>{{item.serviceType}}</td>
+<!--                 <td>{{item.serviceBak}}</td> -->
+                <td>
+				<a href="#" title="{{item.serviceBak}}" style="text-decoration:none;" data-placement="right">{{item.serviceBak.substring(0, 15)+ "..."}}</a>
+				<!-- 按钮触发模态框 -->
+				<button v-show="false" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+					{{item.serviceBak}}
+				</button>
+				</td>
+                
+                <td>{{item.cityName}}</td>
+                <td>{{item.priceNumMin}}</td>
+                <td>{{item.priceNumMax}}</td>
+            </tr>
+            <tr v-show="false">
+                <td colspan="8" class="text-center text-muted">
+                      
+                </td>
+            </tr>
+            <tr v-show="myData.length==0" >
+                <td colspan="8" >
+                    <p>暂无数据....</p>
+                </td>
+            </tr>
+        </table>
+        
+		<div> 
+		    <div class="page"  v-show="show"> 
+		      <div class="pagelist"> 
+		        <span class="jump" v-show="currentPage>1" @click="currentPage--,jumpPage(currentPage)">上一页</span> 
+		        <span v-show="currentPage>5" class="jump" @click="jumpPage(1)">1</span> 
+		        <span class="ellipsis"  v-show="efont">...</span> 
+		        <span class="jump" v-for="num in indexs" :class="{bgprimary:currentPage==num}" @click="jumpPage(num)">{{num}}</span> 
+		        <span class="ellipsis"  v-show="efont&&currentPage<totalPage-4">...</span> 
+		 
+		        <span class="jump" v-show="currentPage<totalPage" @click="currentPage++,jumpPage(currentPage)">下一页</span> 
+		        <span v-show="currentPage<totalPage-1" class="jump" class="jump" @click="jumpPage(totalPage)">末页{{totalPage}}</span> 
+		 
+		        <span class="jumppoint">
+		        <a class="" style="text-decoration:none; cursor:hand "
+						 data-toggle="popover" data-placement="top" 
+						data-content="点击GO按钮可以直接跳到指定的页面">
+					跳转到：
+				</a></span> 
+		        <span class="jumpinp"><input type="text" v-model="changePage"></span> 
+		        <span class="jump gobtn" @click="jumpPage(changePage)">GO</span> 
+		        <span class="jumpinp"> 第{{currentPage}}页     共{{totalPage}}页 </span> 
+		      </div> 
+		    </div> 
+		  </div>
+					  
+					  
+		<div class="footer">
+			<iframe src="../footer.html" width="100%" frameborder="0" scrolling="no"></iframe>
+		</div>
+		
+		<!-- 模态框（Modal） -->
+		<div class="modal fade modalWindow" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							新增服务价格
+						</h4>
+					</div>
+					<div class="modal-body">
+					
+			            <div class="form-group">
+			                <label for="id_edit_serviceCode">输入服务编号:</label>
+			                <input type="text" id="id_edit_serviceCode" class="form-control" placeholder="输入服务编号" v-model="edit_serviceCode">
+			            </div>
+			            <div class="form-group">
+					 		<label for=""id_edit_serviceName"">服务名称:</label>
+					 		<input type="text" class="form-control" id="id_edit_serviceName" v-model="edit_serviceName" placeholder="服务名称" />
+					 	</div>
+					 	<div class="form-group ">
+					        <label>服务类型:</label>
+							<select class="selectpicker form-control" data-style="btn-info"  title="服务类型" v-model="edit_serviceType">
+								<option value="-1" selected="selected">--请选择服务类型--</option>
+								<option value="专利基本服务">专利基本服务</option>
+								<option value="专利流程服务">专利流程服务</option>
+								<option value="专利大数据分析服务">专利大数据分析服务</option>
+								<option value="专利套餐服务">专利套餐服务</option>
+								<option value="国外专利服务">国外专利服务</option>
+								<option value="商标服务">商标服务</option>
+								<option value="版权服务">版权服务</option>
+								<option value="项目服务">项目服务</option>
+							 </select>
+					    </div>
+					    <div class="form-group">
+					        <label for="id_edit_serviceBak">服务介绍</label>
+					        <textarea id="id_edit_serviceBak" class="form-control " rows="3"  v-model="edit_serviceBak"></textarea>
+					    </div>
+					    <div class="form-group" v-show="show_area">
+					        <label for="id_edit_serviceBak"> 服务区域: {{edit_cityName}}</label>
+					    </div>
+					   
+					    <div class="form-group" v-show="show_province">
+					        <label>服务区域-省份:</label>
+							<select class="selectpicker form-control" data-style="btn-info" @change="cityAreaFunc" title="省份" >
+								<option value="-1" selected="selected">--请选择省份--</option>
+								<option v-for="item in area_province" value="{{item.cityCode}}">{{item.cityName}}</option>
+							 </select>
+					    </div>
+					    <div class="form-group" v-show="show_city">
+					        <label>服务区域-城市:</label>
+							<select class="selectpicker form-control" data-style="btn-info" @change="xianAreaFunc" title="城市" >
+								<option value="-1" selected="selected">--请选择城市--</option>
+								<option v-for="item in area_city" value="{{item.cityCode}}">{{item.cityName}}</option>
+							 </select>
+					    </div>
+					    <div class="form-group " v-show="show_xian">
+					        <label>服务区域-区县:</label>
+							<select class="selectpicker form-control" data-style="btn-info" @change="lastAreaFunc" title="区县" >
+								<option value="-1" selected="selected">--请选择区县--</option>
+								<option v-for="item in area_xian" value="{{item.cityCode}}">{{item.cityName}}</option>
+							 </select>
+					    </div>
+					    
+				        
+					    <div class="form-group">
+					        <label for="id_edit_priceNumMin">上限报价</label>
+					        <input type="number" class="form-control" id="id_edit_priceNumMin" v-model="edit_priceNumMin" placeholder="上限报价【请填写整数】" />
+					    </div>
+					    <div class="form-group">
+					        <label for="id_edit_priceNumMax">下限报价</label>
+					        <input type="number" class="form-control" id="id_edit_priceNumMax" v-model="edit_priceNumMax" placeholder="下限报价【请填写整数】" />
+					    </div>
+					    
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button type="button" class="btn btn-primary" @click="submitFunc()">提交</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+	</div>
+
+</body>
+</html>

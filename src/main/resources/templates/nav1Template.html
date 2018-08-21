@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>奇牟nav</title>
+
+	<link rel="shortcut icon" href="../views/ico/qm.png">
+	<link rel="stylesheet" type="text/css" href="../views/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../views/css/comm.css">
+	<link rel="stylesheet" type="text/css" href="../views/css/nav.css">
+	<script type="text/javascript" src="../views/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../views/js/bootstrap.js"></script>
+	<script type="text/javascript" src="../views/js/vue.js"></script>
+	<script type="text/javascript" src="../views/js/vue-resource.js"></script>
+	
+	<script>
+       $(document).ready(function(){
+            var v = new Vue({
+                el:'#box',
+                data:{
+                    msg:''
+                },
+                methods:{
+                    
+                }
+            });
+            
+            $("#test1").addClass("dropdown-header");
+            $("#test2").removeClass("dropdown-header");
+        });
+    </script>
+    	
+</head>
+
+<body>
+	<div class="container" id="box">	
+		
+		<!--反色的导航条 navbar-inverse-->
+		<!--正色的导航条 navbar-default-->
+		<nav class="navbar navbar-default container navbar-fixed-top" role="navigation">
+	          <div class="navbar-header">
+	              <a href="#" class="navbar-brand">主要导航</a>
+	          </div>
+	          <ul class="nav navbar-nav">
+	              <li><a href="#">导航项1</a></li>
+	              <li><a href="#">导航项2</a></li>
+	              <li><a href="#">导航项3</a></li>
+	              <li><a href="#">导航项4</a></li>
+	              <li class="disabled"><a href="#">导航项5</a></li>
+	              <li>
+				    <a class="dropdown-toggle" data-toggle="dropdown">
+				      	导航项6 <span class="caret"></span>
+				    </a>
+				    <ul class="dropdown-menu">
+				      <li><a href="#">导航项61</a></li>
+		              <li><a href="#">导航项62</a></li>
+		              <li><a href="#">导航项63</a></li>
+		              <li role="presentation" class="dropdown-submenu">
+			              <a data-toggle="dropdown" href="#" >
+		             		 导航项64 导航项64 导航项64 导航项64 导航项64 导航项64 导航项64 
+			              </a>
+			              <ul class="dropdown-menu">
+						      <li><a href="#">导航项641</a></li>
+				              <li><a href="javascript:alert(642);">导航项642</a></li>
+				              <li><a href="/tree">导航项643【目录树】</a></li>
+				              <li><a href="#">导航项644</a></li>
+						   </ul>
+		              </li>
+				    </ul>
+				  </li>
+				  <li class="dropdown">  
+		            <a href="#" class="dropdown-toggle" data-toggle="dropdown">下拉菜单<b class="caret"></b></a>  
+		            <ul class="dropdown-menu">  
+		               <li id="test1" class=""><strong>二级菜单标题1二级菜单标题1二级菜单标题1</strong></li>  
+		               <li><a href="#">二级菜单_1</a></li>  
+		               <li class="disabled"><a href="#">二级菜单_2</a></li>  
+		               <li class="divider"></li>  
+		               <li id="test2" class="dropdown-heade">二级菜单标题2</li>  
+		               <li><a href="#">二级菜单_3</a></li>  
+		               <li><a href="#">二级菜单_4二级菜单_4二级菜单_4二级菜单_4</a></li>  
+		               <li class="divider"></li>
+		               <li><a href="#">二级菜单_5</a></li>  
+		               <li><a href="#">二级菜单_6</a></li>  
+		               <li><a href="/tree">二级菜单_7【目录树】</a></li>  
+		            </ul>
+		         </li>
+	          </ul>
+	          
+	          <div>  
+			      <p class="navbar-text navbar-right">当前登录账号：******</p>  
+			  </div>
+	          <button type="button" class="btn btn-default navbar-btn  navbar-right">  
+		       		  <span class="glyphicon glyphicon-off"></span> 安全退出   
+		      </button>  
+	          <button type="button" class="btn btn-default navbar-btn  navbar-right">  
+		       		  <span class="glyphicon glyphicon-home"></span> 回到首页   
+		      </button>  
+		  </nav>
+	
+			
+		 v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+v-bind
+缩写：:
+
+预期：any (with argument) | Object (without argument)
+
+参数：attrOrProp (optional)
+
+修饰符：
+
+.prop - 被用于绑定 DOM 属性 (property)。(差别在哪里？)
+.camel - (2.1.0+) 将 kebab-case 特性名转换为 camelCase. (从 2.1.0 开始支持)
+.sync (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 v-on 侦听器。
+用法：
+
+动态地绑定一个或多个特性，或一个组件 prop 到表达式。
+
+在绑定 class 或 style 特性时，支持其它类型的值，如数组或对象。可以通过下面的教程链接查看详情。
+
+在绑定 prop 时，prop 必须在子组件中声明。可以用修饰符指定不同的绑定类型。
+
+没有参数时，可以绑定到一个包含键值对的对象。注意此时 class 和 style 绑定不支持数组和对象。
+
+示例：
+
+
+.camel 修饰符允许在使用 DOM 模板时将 v-bind 属性名称驼峰化，例如 SVG 的 viewBox 属性：
+
+在使用字符串模板或通过 vue-loader/vueify 编译时，无需使用 .camel。
+
+参考：
+
+Class 与 Style 绑定
+组件 - Props
+组件 - .sync 修饰符
+v-model
+预期：随表单控件类型不同而不同。
+
+限制：
+
+
+components
+修饰符：
+
+.lazy - 取代 input 监听 change 事件
+.number - 输入字符串转为数字
+.trim - 输入首尾空格过滤
+用法：
+
+在表单控件或者组件上创建双向绑定。细节请看下面的教程链接。
+
+参考：
+
+表单控件绑定
+组件 - 在输入组件上使用自定义事件
+v-pre
+不需要表达式
+
+用法：
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+示例：
+
+<span v-pre>{{ this will not be compiled }}</span>
+v-cloak
+不需要表达式
+
+用法：
+
+这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+示例：
+
+[v-cloak] {
+  display: none;
+}
+<div v-cloak>
+  {{ message }}
+</div>
+不会显示，直到编译结束。
+v-once
+不需要表达式
+		
+		
+
+		<div class="footer">
+			<iframe src="../views/footer.html" width="100%" frameborder="0" scrolling="no"></iframe>
+		</div>
+		
+
+	</div>
+
+
+</body>
+</html>
