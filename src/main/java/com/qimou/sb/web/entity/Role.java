@@ -6,13 +6,13 @@ public class Role implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String roleID = null ;//角色ID
+	private int roleID = 0 ;//角色ID
 	private String roleName = null ;//角色名称
 	private String bak = null ;//备注说明
-	public String getRoleID() {
+	public int getRoleID() {
 		return roleID;
 	}
-	public void setRoleID(String roleID) {
+	public void setRoleID(int roleID) {
 		this.roleID = roleID;
 	}
 	public String getRoleName() {

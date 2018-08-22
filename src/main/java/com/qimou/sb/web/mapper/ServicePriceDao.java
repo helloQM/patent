@@ -12,20 +12,20 @@ public interface ServicePriceDao {
 //	@Select("select * from bs_patent_servicePriceDict_t ")
 	@Select("<script>"+
 		    "SELECT *,(SELECT cityName FROM bs_patent_citycodedict_t WHERE  citycode = bs_patent_servicePriceDict_t.cityCode) cityName from bs_patent_servicePriceDict_t where 1=1 "+
-		    "<if test=\"serviceCode!='-1'.toString()\">"+
+		    "<if test='serviceCode!=\"\"'>"+
 		    " and serviceCode=#{serviceCode} "+
 		    "</if>"+
 //		    "<if test=\"serviceName!='-1'.toString()\">"+
-		    "<if test='serviceName!=\"-1\"'>"+
+		    "<if test='serviceName!=\"\"'>"+
 		    " and serviceName=#{serviceName} "+
 		    "</if>"+
-		    "<if test=\"serviceType!='-1'.toString()\">"+
+		    "<if test='serviceType!=\"-1\"'>"+
 		    " and serviceType=#{serviceType} "+
 		    "</if>"+
-		    "<if test='priceNumMin!=-1'>"+
+		    "<if test='priceNumMin!=\"\"'>"+
 		    " and priceNumMin >= #{priceNumMin} "+
 		    "</if>"+
-		    "<if test='priceNumMax!=-1'>"+
+		    "<if test='priceNumMax!=\"\"'>"+
 		    "<![CDATA[ and priceNumMax <= #{priceNumMax}]]>"+
 		    "</if>"+
 		    "order by serviceID "+
@@ -35,20 +35,20 @@ public interface ServicePriceDao {
 	
 	@Select("<script>"+
 		    "SELECT count(*) from bs_patent_servicePriceDict_t where 1=1 "+
-		    "<if test=\"serviceCode!='-1'.toString()\">"+
+		    "<if test='serviceCode!=\"\"'>"+
 		    " and serviceCode=#{serviceCode} "+
 		    "</if>"+
 //		    "<if test=\"serviceName!='-1'.toString()\">"+
-			"<if test='serviceName!=\"-1\"'>"+
+			"<if test='serviceName!=\"\"'>"+
 		    " and serviceName=#{serviceName} "+
 		    "</if>"+
-		    "<if test=\"serviceType!='-1'.toString()\">"+
+		    "<if test='serviceType!=\"-1\"'>"+
 		    " and serviceType=#{serviceType} "+
 		    "</if>"+
-		    "<if test='priceNumMin!=-1'>"+
+		    "<if test='priceNumMin!=\"\"'>"+
 		    " and priceNumMin>=#{priceNumMin} "+
 		    "</if>"+
-		    "<if test='priceNumMax!=-1'>"+
+		    "<if test='priceNumMax!=\"\"'>"+
 		    "<![CDATA[ and priceNumMax <= #{priceNumMax}]]>"+
 		    "</if>"+
 		    "</script>")

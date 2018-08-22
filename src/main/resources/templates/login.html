@@ -45,7 +45,7 @@
                             //alert(res.data);
                             if(res.data.code==0){
                             	alert(res.data.msg);
-	                            window.location.href="/nav";//home页面
+	                            window.location.href="/navHome";//home页面
                             }else{
                             	alert(res.data.msg);
                             	return;
@@ -159,7 +159,7 @@
 	                        </label>
 	                    </div>
 	                    <div class="form-group col-md-offset-9">
-	                        <button type="button" class="btn btn-success pull-right" @click="doLogin"  >登录</button>
+	                        <button type="submit" class="btn btn-success pull-right" @click="doLogin"  >登录</button>
 	                    </div>
 	                </div>
             </div>

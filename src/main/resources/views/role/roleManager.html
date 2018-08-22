@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>角色管理</title>
+
+	<link rel="shortcut icon" href="../ico/qm.png">
+	<link rel="stylesheet" type="text/css" href="../css/grid.css">
+	<link rel="stylesheet" type="text/css" href="../css/page.css">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrapStyle.css">
+	<link rel="stylesheet" type="text/css" href="../css/comm.css">
+	
+	<script type="text/javascript" src="../js/jquery.min.js"></script>
+	<script type="text/javascript" src="../js/jquery.ztree.core.js"></script>
+	<script type="text/javascript" src="../js/jquery.ztree.excheck.js"></script>
+	<script type="text/javascript" src="../js/jquery.ztree.exedit.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<!--     <script type="text/javascript" src="../js/comm.js"></script> -->
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/vue-resource.js"></script>
+	
+	<style type="text/css">
+		
+	</style>
+	<script>
+	
+		var setting = {
+			check: {
+				enable: true
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: { 
+				onCheck: onCheck
+			}
+		};
+		
+       $(document).ready(function(){
+        
+           $("#tishi").delay(15000).fadeOut(1800); //显示一会提示信息后淡出
+        
+            var v = new Vue({
+                el:'#box',
+                data:{
+                	setting:[], // 目录树的设置
+                	zNodes:[], // 目录树节点的数据
+                    myData:[], // 列表数据
+                    checkedNodesBefore:'', // 先前已经选中的目录树节点
+                    totalNum:'',//总条数 
+                    totalPage:'',//总页数 
+                    currentPage:1,//当前页 
+                    changePage:'',//跳转页
+                    pageSize:'2', //一页的容量
+                    loadingFlag:false,//等待条显示或隐藏标识
+                    edit_roleID:'',
+					edit_roleName:'',
+					edit_bak:' '
+                },
+                computed:{ 
+				     show:function(){ 
+				         return this.totalPage && this.totalPage !=1 
+				     }, 
+				     efont: function() { 
+				       if (this.totalPage <= 7) return false; 
+				       return this.currentPage > 5 
+				     }, 
+				     indexs: function() { 
+				 
+				       var left = 1, 
+				         right = this.totalPage, 
+				         ar = []; 
+				       if (this.totalPage >= 7) { 
+				         if (this.currentPage > 5 && this.currentPage < this.totalPage - 4) { 
+				           left = Number(this.currentPage) - 3; 
+				           right = Number(this.currentPage) + 3; 
+				         } else { 
+				           if (this.currentPage <= 5) { 
+				             left = 1; 
+				             right = 7; 
+				           } else { 
+				             right = this.totalPage; 
+				 
+				             left = this.totalPage - 6; 
+				           } 
+				         } 
+				       } 
+				       while (left <= right) { 
+				         ar.push(left); 
+				         left++; 
+				       } 
+				       return ar; 
+				     }, 
+			    }, 
+                created:function(){
+                },
+                ready:function(){
+                	this.setting = setting;
+	                this.loadData();
+	            },
+                methods:{
+                	//加载页面主题内容
+                    loadData:function(){
+                    	this.loadingFlag = true;
+                    	this.myData = [];//清空
+                        this.$http.post('/listRole',{
+                            currentPage: this.currentPage,
+                            pageSize:this.pageSize,
+							nullParam:''//没用的参数，用来生成&。
+                        },{
+                            emulateJSON:true
+                        }).then(function(res){//success
+//                             alert(res.data.roleTotalNum);
+//                             alert(res.data.listRole.length);
+							this.loadingFlag = false;
+							this.totalNum = res.data.roleTotalNum;
+							this.totalPage = parseInt(((this.totalNum-1)/this.pageSize)+1);
+							for(var i = 0;i<res.data.listRole.length;i++){
+// 						    	alert(JSON.stringify(res.data.listRole[i]));//jquery解析json格式数据为string
+							    this.myData.push(res.data.listRole[i]); 
+							}
+							
+                        },function(res){
+                            //alert("error : "+res.status);//error
+                        });
+                    },
+                    
+                    //加载目录树方法
+                    loadAuthority:function(b){
+	//                 	alert(JSON.stringify(this.zNodes));
+	                		this.$http.post('/listAllAuthority',{
+	                            nullParam:''//没用的参数，用来生成&。
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+		                        this.zNodes = [];//清空
+								for(var i = 0;i<res.data.length;i++){
+									this.zNodes.push(res.data[i]);
+								}
+								$.fn.zTree.init($("#treeDemo"), this.setting, this.zNodes);
+								if(b&&this.checkedNodesBefore.length>0){
+									var arr = this.checkedNodesBefore.split("~");
+									for (var i = 0; i <arr.length; i++){
+										this.initCheck(arr[i]);//默认选中
+									}
+								}
+								
+	                        },function(res){
+	                            //alert("error : "+res.status);//error
+	                        });
+	                },
+	                
+	                //初始化勾选并选中指定的目录
+	                initCheck:function(pid){//
+		                var zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
+						var node = zTree_Menu.getNodeByParam("id",pid);
+						zTree_Menu.checkNode(node,true,true);//勾选ID的节点
+						zTree_Menu.selectNode(node,true);//指定选中ID的节点
+						zTree_Menu.expandNode(node, true, false);//指定选中ID节点展开
+						
+						onCheck();
+	                },
+	                
+                    //页面跳转
+                    jumpPage: function(id) {
+					      var reg = /^[1-9]\d*$/
+					      if(id==''||!reg.test(id)||id>this.totalPage){//校验跳转页是否合法
+					      	alert('请填写一个不大于 '+this.totalPage+' 的整数');
+					      	return;
+					      }
+// 					      alert(id);//加载数据操作
+					      this.currentPage = id;
+					      
+					      this.loadData();
+					},
+					
+					//双击一行弹出编辑窗口
+				    checkedAline(id,index){
+// 				    	alert(id+":"+index);
+						$("#id_show").html("");
+				    	$('#myModal').modal('toggle');
+				    	$("#myModalLabel").text("编辑角色");
+				    	
+				    	//设置待编辑的各项的值
+				    	this.edit_roleID=this.myData[index].roleID;
+						this.edit_roleName=this.myData[index].roleName;
+						this.edit_bak=this.myData[index].bak;
+						
+						this.$http.post('/listRoleAuthority',{
+							roleID:this.edit_roleID,
+                            nullParam:''//没用的参数，用来生成&。
+                        },{
+                            emulateJSON:true
+                        }).then(function(res){//success
+//                         	alert(res.data);
+							this.checkedNodesBefore = res.data;
+							this.loadAuthority(true);//加载目录树
+                        },function(res){
+                        });
+						
+						$("#myModal").css("height","800px");//设置弹出框的高度
+						$(".modal-dialog").css("width","680px");//设置弹出框的宽度
+				    },
+				    
+				    //点击新增按钮弹出新增窗口
+				    addFunc(){
+				    	$("#id_show").html("");
+				    	$('#myModal').modal('toggle');
+// 						this.edit_roleID='';
+						this.edit_roleName='';
+						this.edit_bak='';
+						
+// 						this.loadAuthority(false);//加载目录树
+						$("#myModal").css("height","400px");//设置弹出框的高度
+// 						$(".modal-dialog").css("width","680px");//设置弹出框的宽度
+				    	$("#myModalLabel").text("新增角色");
+				    },
+				    
+				    //提交数据
+				    submitFunc:function(){
+				    	if(this.edit_roleName==''){
+				    		alert("角色名称不能为空");
+				    		return;
+				    	}
+				        if($("#myModalLabel").text().indexOf("编辑") != -1){
+							this.loadingFlag = true;
+	                        this.$http.post('/updateRole',{
+								roleID: this.edit_roleID,
+								roleName: this.edit_roleName,
+								bak: this.edit_bak,
+								checkedNodes:$("#id_show").html()
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+	//                             alert(res.data.servicePriceTotalNum);
+	//                             alert(res.data.listServicePrice.length);
+								this.loadingFlag = false;
+// 								alert("添加成功");
+								alert(res.data.msg);
+								this.loadData();
+	                        },function(res){
+	                            alert(res.data.msg+" : "+res.status);//error
+	                        });
+				        }
+				    	
+				    	if($("#myModalLabel").text().indexOf("新") != -1){
+				    	
+					    	this.loadingFlag = true;
+	                        this.$http.post('/addRole',{
+// 								roleID: this.edit_roleID,
+								roleName: this.edit_roleName,
+								bak: this.edit_bak,
+								checkedNodes:$("#id_show").html()
+								
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+	//                             alert(res.data.servicePriceTotalNum);
+	//                             alert(res.data.listServicePrice.length);
+								this.loadingFlag = false;
+// 								alert("添加成功");
+								alert(res.data.msg);
+								this.loadData();
+								
+	                        },function(res){
+	                            alert(res.data.msg+" : "+res.status);//error
+	                        });
+// 				    		alert("添加成功");
+				    	}
+				    	$('#myModal').modal('toggle');
+				    }
+                }
+            });
+            
+        });
+        
+        //节点选择事件
+  		function onCheck(e,treeId,treeNode){
+		  var treeObj=$.fn.zTree.getZTreeObj("treeDemo"),
+		  	  nodes=treeObj.getCheckedNodes(true),
+		      v="";
+		  
+		  for(var i=0;i<nodes.length;i++){
+		    v+=nodes[i].id + "~";
+		  }
+		  if (v.length > 0) {
+			 v = v.substring(0, v.length - 1);
+		  }
+		  $("#id_show").html(v);
+		}
+		
+		
+		
+    </script>	
+</head>
+
+<body>
+
+	<div class="container" id="box">
+		<div id="loading" class="loading" v-show=loadingFlag>加载中...</div>
+		 <div class="header">
+		   <ul class="nav nav-pills pull-right">
+		     <li class="active"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+		     <li><a href="#">关于</a></li>
+		     <li><a href="/gotoLogoutPage">安全退出</a></li> 
+		   </ul>
+		   <h3 class="text-muted ">角色管理 <span class="glyphicon glyphicon-hand-right"></span> </h3>
+		 </div>
+		 
+		 <table class="table table-bordered table-hover text-nowrap">
+            <div class="pull-right">
+            	<strong id="tishi" class="lead text-primary">双击各行可编辑</strong>
+				<button class="btn btn-primary btn-lg" data-toggle="modal" @click="addFunc()">
+					新增角色
+				</button>
+            </div>
+            <colgroup>
+	            <col>
+	            <col>
+	            <col style="width: 60%">
+            </colgroup>
+	            <tr class="text-danger warning">
+	                <th class="text-center">序号</th>
+	                <th class="text-center">角色名称</th>
+	                <th class="text-center">备注说明</th>
+	            </tr>
+	            <tr class="text-center" v-for="item in myData"  @dblclick="checkedAline(item.roleID,$index)">
+	                <td>{{$index+1}}</td>
+	                <td>{{item.roleName}}</td>
+	                <td>
+					<a href="#" title="{{item.bak}}" style="text-decoration:none;" data-placement="right">{{item.bak.substring(0, 15)+ "..."}}</a>
+					</td>
+	            </tr>
+	            <tr v-show="false">
+	                <td colspan="8" class="text-center text-muted">
+	                      
+	                </td>
+	            </tr>
+	            <tr v-show="myData.length==0" >
+	                <td colspan="8" >
+	                    <p>暂无数据....</p>
+	                </td>
+	            </tr>
+        </table>
+        
+		<div> 
+		    <div class="page"  v-show="show"> 
+		      <div class="pagelist"> 
+		        <span class="jump" v-show="currentPage>1" @click="currentPage--,jumpPage(currentPage)">上一页</span> 
+		        <span v-show="currentPage>5" class="jump" @click="jumpPage(1)">1</span> 
+		        <span class="ellipsis"  v-show="efont">...</span> 
+		        <span class="jump" v-for="num in indexs" :class="{bgprimary:currentPage==num}" @click="jumpPage(num)">{{num}}</span> 
+		        <span class="ellipsis"  v-show="efont&&currentPage<totalPage-4">...</span> 
+		 
+		        <span class="jump" v-show="currentPage<totalPage" @click="currentPage++,jumpPage(currentPage)">下一页</span> 
+		        <span v-show="currentPage<totalPage-1" class="jump" class="jump" @click="jumpPage(totalPage)">末页{{totalPage}}</span> 
+		 
+		        <span class="jumppoint">
+		        <a class="" style="text-decoration:none; cursor:hand "
+						 data-toggle="popover" data-placement="top" 
+						data-content="点击GO按钮可以直接跳到指定的页面">
+					跳转到：
+				</a></span> 
+		        <span class="jumpinp"><input type="text" v-model="changePage"></span> 
+		        <span class="jump gobtn" @click="jumpPage(changePage)">GO</span> 
+		        <span class="jumpinp"> 第{{currentPage}}页     共{{totalPage}}页 </span> 
+		      </div> 
+		    </div> 
+		  </div>
+					  
+					  
+		<div class="footer">
+			<iframe src="../footer.html" width="100%" frameborder="0" scrolling="no"></iframe>
+		</div>
+		
+		<!-- 模态框（Modal） -->
+		<div class="modal fade modalWindow" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+			<div class="modal-dialog" >
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							***
+						</h4>
+					</div>
+					<div class="modal-body">
+					
+			            <div class="form-group">
+			                <label for="id_edit_roleName">角色名称:</label>
+			                <input type="text" id="id_edit_roleName" class="form-control" placeholder="输入角色名称" v-model="edit_roleName" maxlength="20">
+			            </div>
+					 	
+					    <div class="form-group">
+					        <label for="id_edit_bak">角色介绍:</label>
+					        <textarea id="id_edit_bak" class="form-control " rows="3"  v-model="edit_bak" maxlength="50"></textarea>
+					    </div>
+					    <div class="form-group" v-show="zNodes.length!=0">
+					    	设置权限  <span class="glyphicon glyphicon-share-alt"></span>
+					        <ul id="treeDemo" class="ztree"></ul>
+					        <p id="id_show"></p>
+					    </div>
+					    
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button type="button" class="btn btn-primary" @click="submitFunc()">提交</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+	</div>
+
+</body>
+</html>

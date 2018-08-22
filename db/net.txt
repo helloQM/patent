@@ -95,5 +95,11 @@ http://www.jq22.com/jquery-info15047
 sqlError:
 https://segmentfault.com/q/1010000006574557/a-1020000006576101
 
+springboot error:
+org.thymeleaf.exceptions.TemplateInputException:https://blog.csdn.net/Lin_xiaofeng/article/details/79122053
+
+一次提交两次request：
+https://blog.csdn.net/u013378306/article/details/52944780
+
 正式环境调优：
 MyBatisConfig.java中  setIdleMaxAgeInMinutes的值设置为0

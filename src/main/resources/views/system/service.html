@@ -16,7 +16,7 @@
 	<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
 	<script type="text/javascript" src="../js/jquery.min.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../js/comm.js"></script>
+<!--     <script type="text/javascript" src="../js/comm.js"></script> -->
 	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/vue-resource.js"></script>
 	<style type="text/css">
@@ -108,7 +108,7 @@
 							serviceType: this.serviceType,
 							serviceCode: this.serviceCode,
 							cityCode: "-1",
-							serviceBak: "-1",
+							serviceBak: "",
 							serviceID: "-1",
 							serviceName: this.serviceName,
 							priceNumMax: this.priceNumMax,
@@ -143,6 +143,7 @@
 					},
 					
 					provinceAreaFunc:function(){
+						
 						if(this.area_province.length!=0){
                     	  return;
                         }
@@ -154,11 +155,12 @@
                             emulateJSON:true
                         }).then(function(res){//success
 	                        this.area_province = [];//清空
-                            
+//                             alert(res.data.length);
 							for(var i = 0;i<res.data.length;i++){
 // 						    	alert(JSON.stringify(res.data[i]));//jquery解析json格式数据为string
 								this.area_province.push(res.data[i]);
 							}
+// 							alert(JSON.stringify(this.area_province));
                         },function(res){
                             //alert("error : "+res.status);//error
                         });
@@ -220,7 +222,7 @@
 						this.edit_cityCode = ele.target.value;
                     },
                     init(){
-				        alert(1);
+                    	alert(1);
 				    },
 				    
 				    testJqueryFunc(){
@@ -326,7 +328,7 @@
 				        }
 				    	
 				    	if($("#myModalLabel").text().indexOf("新") != -1){
-				    	
+				    		alert(1);
 					    	this.loadingFlag = true;
 	                        this.$http.post('/addServicePrice',{
 								serviceType: this.edit_serviceType,
@@ -341,8 +343,7 @@
 	                        },{
 	                            emulateJSON:true
 	                        }).then(function(res){//success
-	//                             alert(res.data.servicePriceTotalNum);
-	//                             alert(res.data.listServicePrice.length);
+					    		alert(2);
 								this.loadingFlag = false;
 // 								alert("添加成功");
 								alert(res.data.msg);
@@ -351,14 +352,9 @@
 	                        },function(res){
 	                            alert(res.data.msg+" : "+res.status);//error
 	                        });
-                        
-// 				    		alert("添加成功");
 				    	}
-				    	
 				    	$('#myModal').modal('toggle');
-				    	
 				    }
-				    
                 }
             });
             

@@ -13,7 +13,7 @@ public interface AuthorityDao {
 	@Select("select id,pid,CONCAT(NAME,' -- 【 ',description,' 】') NAME,path,description,OPEN,NAME AVALUE from bs_patent_authority_t ")
 	public List<Authority> listAllAuthority();
 	
-//	@Select("select id,pid,name,path from bs_patent_authority_t WHERE pid IN (1,2,3,6,31) OR id IN (1,2,3,6,31)")
+//	@Select("select id,pid,name,path from bs_patent_authority_t WHERE id IN (3,31,311)")
 	@Select("select id,pid,name,path from bs_patent_authority_t ")
 	public List<Map<Object, Object>> listTemp();
 	

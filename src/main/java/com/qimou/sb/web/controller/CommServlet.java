@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.qimou.sb.web.entity.User;
-import com.qimou.sb.web.service.CommService;
 import com.qimou.sb.web.service.UserService;
 import com.qimou.sb.web.tool.JsonUtil;
 
@@ -25,42 +24,11 @@ import com.qimou.sb.web.tool.JsonUtil;
 public class CommServlet {
 	private static final Logger logger = LoggerFactory.getLogger(CommServlet.class);
 	
-	@Autowired
-	private CommService commService;
 	
 	@Autowired
 	private UserService userService;
 	
 	
-	/**
-	 * 
-	 * @author : haoming
-	 * @date : 2018年8月14日下午1:48:11
-	 * @patent com.qimou.sb.web.controller.CommServlet.java.listCityCode
-	 * @returnType : String
-	 * @desc :按级获得城市列表
-	 */
-	@RequestMapping("listCityCode")
-//	@ResponseBody
-	public String listCityCode(@RequestBody String jsonStr,HttpServletRequest request){
-		List<Map<Object, Object>> listCityCode = null;
-		try {
-			jsonStr = URLDecoder.decode(jsonStr, "UTF-8");//解决中文乱码
-			System.out.println(jsonStr);
-			Map<Object, Object> conditionMap = new HashMap<Object, Object>();
-			if(jsonStr.contains("&")){
-				conditionMap = JsonUtil.url2Map(jsonStr, "&");
-			}else{
-				conditionMap = JsonUtil.jsonStr2Map(jsonStr);
-			}
-			listCityCode = commService.listCityCode(conditionMap);
-		} catch (Exception e) {
-			logger.error(e.toString());
-		}
-		
-		return JsonUtil.list2JsonStr(listCityCode);
-	}
-    
 	
 	@RequestMapping(value="gotoLogoutPage")
     public String gotoLogoutPage(HttpServletRequest request) {
@@ -110,6 +78,8 @@ public class CommServlet {
      * jsonStr : {"userID":"***","pwd":"***"}
      * 注意 content type 要设置成 application/json，否则会在请求体后多一个=
      */
+	
+//	@SameUrlData
 	@RequestMapping(value="doLogin")
 	@ResponseBody
 	public String doLogin(@RequestBody String jsonStr,HttpServletRequest request) {

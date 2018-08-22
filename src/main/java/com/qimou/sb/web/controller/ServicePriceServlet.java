@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.qimou.sb.web.entity.ServicePrice;
 import com.qimou.sb.web.service.ServicePriceService;
 import com.qimou.sb.web.tool.JsonUtil;
 
@@ -43,6 +42,7 @@ public class ServicePriceServlet {
 	public String listServicePrice(@RequestBody String jsonStr,HttpServletRequest request){
 		jsonStr = URLDecoder.decode(jsonStr);//解决中文乱码
 		System.out.println(jsonStr);
+		System.out.println("listServicePrice .......");
 //		if(jsonStr.contains("&")){
 //			jsonStr = jsonStr.replace("&", ",");
 //			jsonStr = "{"+jsonStr+"}";

@@ -247,7 +247,7 @@ public class JsonUtil {
 		String[] split = urlString.split(regex);
 		for (String item:split) {
 			String[] it = item.split("=");
-			returnMap.put(it[0], it.length==1?"-1":it[1]);
+			returnMap.put(it[0], it.length==1?"":it[1]);
 		}
 		return returnMap;
 	}

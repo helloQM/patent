@@ -3522,6 +3522,11 @@ values
 
 
 /*==============================================================*/
+/* Table: bs_patent_roledict_t                                      */
+/*==============================================================*/
+insert  into bs_patent_roledict_t(roleID,roleName,bak) values (0,'超级管理员','拥有所有的权限');
+
+/*==============================================================*/
 /* Table: bs_patent_user_t                                      */
 /*==============================================================*/
 INSERT INTO bs_patent_user_t (userID,userName,pwd,userRole, userEmail,userCellPhone,userStat,userDepartment,userGender)

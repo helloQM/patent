@@ -126,8 +126,8 @@ alter table bs_patent_customer_t comment '客户信息表';
 /*==============================================================*/
 create table bs_patent_roleAuthority_t
 (
-   id                   int(3) comment '页面ID',
-   roleID               varchar(2) comment '角色ID'
+   id                   varchar(10) comment '页面ID',
+   roleID               int comment '角色ID'
 );
 
 alter table bs_patent_roleAuthority_t comment '角色权限中间i表';
@@ -137,7 +137,7 @@ alter table bs_patent_roleAuthority_t comment '角色权限中间i表';
 /*==============================================================*/
 create table bs_patent_roleDict_t
 (
-   roleID               varchar(2) not null comment '角色ID',
+   roleID               int not null auto_increment comment '角色ID',
    roleName             varchar(20) comment '角色名称',
    bak                  varchar(50) comment '备注说明',
    primary key (roleID)
