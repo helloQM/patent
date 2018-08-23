@@ -20,4 +20,7 @@ public class CommService {
 		return commDao.listCityCode(conditionMap);
 	}
 
+	public List<Map<Object, Object>> listAllRoles(){
+		return commDao.listAllRoles();
+	}
 }

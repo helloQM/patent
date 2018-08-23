@@ -1,5 +1,8 @@
 ﻿https://github.com/ityouknow/spring-boot-examples
 
+springboot获得prop中的变量的3中方式:
+https://blog.csdn.net/qq_37171353/article/details/78005845
+
 mybatis 注解方式:
 https://blog.csdn.net/yangshangwei/article/details/80003186
 http://www.cnblogs.com/goloving/p/9241421.html

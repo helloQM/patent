@@ -37,12 +37,15 @@ public class User implements Serializable{
 	private String userID = null ;//用户ID，用作登录账号
 	private String userName = null ;//用户名称
 	private String pwd = null ;//登录密码
-	private String userRole = null ;//用户角色【0：超级管理员；1：销售人员；2：专利代理人【全职】；3：专利代理人【兼职】4：财务人员；5：流程人】
+	private String userRole = null ;//用户角色
+	private String userRoleShow = null ;//用户角色,只用于显示
 	private String userEmail = null ;//用户邮箱地址
 	private String userCellPhone = null ;//用户手机
 	private int userStat = 0 ;//用户状态【1：正常；2：注销】
+	private String userStatShow = "" ;//用户状态【1：正常；2：注销】,只用于显示
 	private String userDepartment = null ;//用户部门
 	private int userGender = 0 ;//用户性别：0，表示女；1，表示男
+	private String userGenderShow = "" ;//用户性别：0，表示女；1，表示男,只用于显示
 	private String createTime = null ;//创建时间
 	public String getUserID() {
 		return userID;
@@ -94,6 +97,24 @@ public class User implements Serializable{
 	}
 	public int getUserGender() {
 		return userGender;
+	}
+	public String getUserRoleShow() {
+		return userRoleShow;
+	}
+	public void setUserRoleShow(String userRoleShow) {
+		this.userRoleShow = userRoleShow;
+	}
+	public String getUserStatShow() {
+		return userStatShow;
+	}
+	public void setUserStatShow(String userStatShow) {
+		this.userStatShow = userStatShow;
+	}
+	public String getUserGenderShow() {
+		return userGenderShow;
+	}
+	public void setUserGenderShow(String userGenderShow) {
+		this.userGenderShow = userGenderShow;
 	}
 	public void setUserGender(int userGender) {
 		this.userGender = userGender;

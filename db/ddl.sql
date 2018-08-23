@@ -171,15 +171,16 @@ create table bs_patent_user_t
    userID               varchar(20) not null comment '用户ID，用作登录账号',
    userName             varchar(30) comment '用户名称',
    pwd                  varchar(16) default 'qimou123456' comment '登录密码',
-   userRole             varchar(10) comment '用户角色【0：超级管理员；1：销售人员；2：专利代理人【全职】；3：专利代理人【兼职】4：财务人员；5：流程人】',
+   userRole             varchar(50) comment '用户角色【0：超级管理员；1：销售人员；2：专利代理人【全职】；3：专利代理人【兼职】4：财务人员；5：流程人】',
    userEmail            varchar(30) comment '用户邮箱地址',
    userCellPhone        varchar(11) comment '用户手机',
    userStat             int(1) comment '用户状态【1：正常；2：注销】',
    userDepartment       varchar(20) comment '用户部门',
    userGender           int(1) comment '用户性别：0，表示女；1，表示男',
-   createTime           timestamp comment '创建时间',
+   createTime           timestamp default CURRENT_TIMESTAMP comment '创建时间',
    primary key (userID)
 );
+
 
 alter table bs_patent_user_t comment '用户信息表';
 

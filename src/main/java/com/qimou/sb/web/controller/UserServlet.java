@@ -1,12 +1,14 @@
 package com.qimou.sb.web.controller;
 
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.qimou.sb.web.entity.User;
@@ -42,18 +43,29 @@ public class UserServlet {
 	
 	@RequestMapping("listUser")
 	@ResponseBody
-	public String listUser(String userStat,String pageNum,HttpServletRequest request){
-		List<User> listUser = null;
+	public String listUser(@RequestBody String jsonStr,HttpServletRequest request){
+		Map<Object, Object> conditionMap = new HashMap<Object, Object>();
+		List<Map<Object, Object>> list = null;
 		Map<Object, Object> returnMap = new HashMap<Object, Object>();
 		try {
-			listUser = userService.listUser(userStat==null?-1:Integer.parseInt(userStat), Integer.parseInt(pageNum), 10);
-			logger.info(listUser.toString());
-			returnMap.put("userTotalNum", userService.userNum(userStat==null?-1:Integer.parseInt(userStat)));
+			jsonStr = URLDecoder.decode(jsonStr, "UTF-8");//解决中文乱码
+			System.out.println(jsonStr);
+			if(jsonStr.contains("&")){
+				conditionMap = JsonUtil.url2Map(jsonStr, "&");
+			}else{
+				conditionMap = JsonUtil.jsonStr2Map(jsonStr);
+			}
+			int pageSize = Integer.parseInt(conditionMap.get("pageSize").toString());
+			conditionMap.put("pageSize", pageSize);
+			conditionMap.put("startNum", pageSize*(Integer.parseInt(conditionMap.get("currentPage").toString())-1));
+			
+			list = userService.listUser(conditionMap);
+			returnMap.put("roleTotalNum", userService.userNum(conditionMap));
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.toString());
 		}
-		return JsonUtil.generalMixJson(listUser,returnMap,"userList");
+		
+		return JsonUtil.generalMixJson(list,returnMap,"listUser");
 	}
     
     /**
@@ -71,22 +83,27 @@ public class UserServlet {
     public String addUser(@RequestBody String jsonStr,HttpServletRequest request){
     	logger.info("jsonStr: "+jsonStr);
     	Map<String, String> returnMap = new HashMap<String, String>();
+    	Map<Object, Object> conditionMap = new HashMap<Object, Object>();
     	String returnStr = "";
     	try {
     		jsonStr = URLDecoder.decode(jsonStr, "UTF-8");
-    		User user = (User)JsonUtil.jsonStr2Bean(jsonStr, User.class);
-    		if(userService.addUser(user) == 1){
+    		if(jsonStr.contains("&")){
+				conditionMap = JsonUtil.url2Map(jsonStr, "&");
+			}else{
+				conditionMap = JsonUtil.jsonStr2Map(jsonStr);
+			}
+    		if(userService.addUser(conditionMap)>=1){
     			returnMap.put("code", "0");
-    			returnMap.put("msg", "添加成功");
+				returnMap.put("msg", "新增成功");
     		}
-		} catch (Exception e) {
-			returnMap.put("code", "1");
-			returnMap.put("msg", "添加失败");
-			logger.error(e.toString());
-		} finally{
-			returnStr = JsonUtil.map2JsonStr(returnMap);
-		}
-
+    	} catch (Exception e) {
+    		returnMap.put("code", "1");
+			returnMap.put("msg", "新增失败");
+    		logger.error(e.toString());
+    	} finally{
+    		returnStr = JsonUtil.map2JsonStr(returnMap);
+    	}
+    	
     	return returnStr;
     }
     /**
@@ -103,11 +120,17 @@ public class UserServlet {
     @ResponseBody
     public String updateUser(@RequestBody String jsonStr,HttpServletRequest request){
     	Map<String, String> returnMap = new HashMap<String, String>();
+    	Map<Object, Object> conditionMap = new HashMap<Object, Object>();
     	String returnStr = "";
     	try {
     		jsonStr = URLDecoder.decode(jsonStr, "UTF-8");
-    		User user = (User)JsonUtil.jsonStr2Bean(jsonStr, User.class);
-    		if(userService.updateUser(user) == 1){
+    		System.out.println(jsonStr);
+    		if(jsonStr.contains("&")){
+				conditionMap = JsonUtil.url2Map(jsonStr, "&");
+			}else{
+				conditionMap = JsonUtil.jsonStr2Map(jsonStr);
+			}
+    		if(userService.updateUser(conditionMap)>=1){
     			returnMap.put("code", "0");
     			returnMap.put("msg", "修改成功");
     		}

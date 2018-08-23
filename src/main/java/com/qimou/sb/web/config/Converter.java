@@ -1,7 +1,6 @@
 package com.qimou.sb.web.config;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,17 +16,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.qimou.sb.web.service.RoleService;
+import com.qimou.sb.web.tool.CommUtil;
+
 
 @Configuration
 public class Converter extends WebMvcConfigurerAdapter implements Filter {
 
+	@Autowired
+	private RoleService roleService;
+	
 	// 标示符：表示当前用户未登录(可根据自己项目需要改为json样式)
 	String NO_LOGIN = "您还未登录";
 
@@ -111,6 +116,12 @@ public class Converter extends WebMvcConfigurerAdapter implements Filter {
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
 		System.out.println("过滤器  init");
+		int index = 1;
+		for (int i = 0; i < roleService.roleNum(); i++) {
+			CommUtil.roleNumSet.add(index++);
+		}
+//		System.out.println("CommUtil.roleNumSet : "+CommUtil.roleNumSet);
+		
 	}
 
 	@Override

@@ -1,36 +1,25 @@
 package com.qimou.sb.web.controller;
 
-import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import com.qimou.sb.web.entity.User;
-import com.qimou.sb.web.service.UserService;
-import com.qimou.sb.web.tool.JsonUtil;
-
+/**
+ * 
+ * @author : haoming
+ * @date : 2018年8月23日上午9:18:42
+ * @returnType : String
+ * @desc : 导航调度控制器   【跳转到 templates 目录下的 ***.html】
+ * 不能用@RestController
+	   或@ResponseBody
+ */
 @Controller
-public class CommServlet {
-	private static final Logger logger = LoggerFactory.getLogger(CommServlet.class);
+public class CommNavServlet {
 	
 	
-	@Autowired
-	private UserService userService;
-	
-	
-	
-	@RequestMapping(value="gotoLogoutPage")
+	@GetMapping(value="gotoLogoutPage")
     public String gotoLogoutPage(HttpServletRequest request) {
         //跳转到 templates 目录下的 logout.html
 //		System.out.println("SessionID : "+request.getSession().getId());
@@ -41,14 +30,14 @@ public class CommServlet {
 //        return "uploadimg";
     }
 	
-	@RequestMapping(value="gotoLoginPage")
+	@GetMapping(value="gotoLoginPage")
 	public String gotoLoginPage(HttpServletRequest request) {
 		//跳转到 templates 目录下的 logout.html
 //		System.out.println("SessionID : "+request.getSession().getId());
 //        return "view/system/editDemo";
 		return "login";
 	}
-	@RequestMapping(value="/")
+	@GetMapping(value="/")
 	public String gotoHomePage(HttpServletRequest request) {
 		//跳转到 templates 目录下的 logout.html
 //		System.out.println("SessionID : "+request.getSession().getId());
@@ -58,11 +47,11 @@ public class CommServlet {
 //		return "home";
 		return "navHome";
 	}
-	@RequestMapping(value="/navHome")
+	@GetMapping(value="/navHome")
 	public String nav(HttpServletRequest request) {
 		return "navHome";
 	}
-	@RequestMapping(value="/tree")
+	@GetMapping(value="/tree")
 	public String tree(HttpServletRequest request) {
 		return "tree";
 	}
@@ -79,51 +68,7 @@ public class CommServlet {
      * 注意 content type 要设置成 application/json，否则会在请求体后多一个=
      */
 	
-//	@SameUrlData
-	@RequestMapping(value="doLogin")
-	@ResponseBody
-	public String doLogin(@RequestBody String jsonStr,HttpServletRequest request) {
-		System.out.println("doLogin....");
-		Map<Object, Object> conditionMap = new HashMap<Object, Object>();
-		Map<String, String> returnMap = new HashMap<String, String>();
-		String returnStr = "";
-		try {
-    		jsonStr = URLDecoder.decode(jsonStr, "UTF-8");
-    		System.out.println("jsonStr : "+jsonStr);
-    		if(jsonStr.contains("&")){
-				conditionMap = JsonUtil.url2Map(jsonStr, "&");
-			}else{
-				conditionMap = JsonUtil.jsonStr2Map(jsonStr);
-			}
-    		String userID = conditionMap.get("userID").toString();
-    		String pwd = conditionMap.get("pwd").toString();
-    		User user = userService.userLogin(userID, pwd);
-    		if(user.getUserStat() == 1){// 登录成功,且是正常用户
-    			HttpSession session = request.getSession();
-    	        session.setMaxInactiveInterval(30 * 60);
-    			System.out.println("SessionID : "+request.getSession().getId());
-    			session.setAttribute("userID", user.getUserID());
-    			session.setAttribute("userName", user.getUserName());
-    			session.setAttribute("roleIDs", user.getUserRole());
-    			returnMap.put("code", "0");
-    			returnMap.put("msg", "登录成功");
-    		} else if(user.getUserStat() == 2){
-    			returnMap.put("code", "1");
-    			returnMap.put("msg", "用户已经被注销!");
-    		} else{
-    			returnMap.put("code", "2");
-    			returnMap.put("msg", "用户名密码不正确");
-    		}
-    	} catch (Exception e) {
-    		returnMap.put("code", "3");
-			returnMap.put("msg", "登录失败");
-    		logger.error(e.toString());
-    	} finally{
-    		returnStr = JsonUtil.map2JsonStr(returnMap);
-    	}
-		
-		return returnStr;
-	}
+	
 	
 	/**
 	 * 

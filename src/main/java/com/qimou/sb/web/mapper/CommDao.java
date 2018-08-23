@@ -10,5 +10,8 @@ public interface CommDao {
 	@Select("SELECT * FROM bs_patent_cityCodeDict_t WHERE pid = #{pid} ")
 	public List<Map<Object, Object>> listCityCode(Map<Object, Object> conditionMap);
 	
+	
+	@Select("SELECT * FROM bs_patent_roledict_t ")
+	public List<Map<Object, Object>> listAllRoles();
     
 }

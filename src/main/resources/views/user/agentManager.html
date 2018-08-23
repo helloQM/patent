@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-	<title>角色管理</title>
+	<title>代理人管理</title>
 
 	<link rel="shortcut icon" href="../ico/qm.png">
 	<link rel="stylesheet" type="text/css" href="../css/grid.css">
@@ -185,7 +185,7 @@
 // 				    	alert(id+":"+index);
 						$("#id_show").html("");
 				    	$('#myModal').modal('toggle');
-				    	$("#myModalLabel").text("编辑角色");
+				    	$("#myModalLabel").text("编辑代理人");
 				    	
 				    	//设置待编辑的各项的值
 				    	this.edit_roleID=this.myData[index].roleID;
@@ -210,7 +210,6 @@
 				    
 				    //点击新增按钮弹出新增窗口
 				    addFunc(){
-				    	this.zNodes = [];//清空
 				    	$("#id_show").html("");
 				    	$('#myModal').modal('toggle');
 // 						this.edit_roleID='';
@@ -220,13 +219,13 @@
 // 						this.loadAuthority(false);//加载目录树
 						$("#myModal").css("height","400px");//设置弹出框的高度
 // 						$(".modal-dialog").css("width","680px");//设置弹出框的宽度
-				    	$("#myModalLabel").text("新增角色");
+				    	$("#myModalLabel").text("新增代理人");
 				    },
 				    
 				    //提交数据
 				    submitFunc:function(){
 				    	if(this.edit_roleName==''){
-				    		alert("角色名称不能为空");
+				    		alert("代理人名称不能为空");
 				    		return;
 				    	}
 				        if($("#myModalLabel").text().indexOf("编辑") != -1){
@@ -311,14 +310,14 @@
 		     <li><a href="#">关于</a></li>
 		     <li><a href="/gotoLogoutPage">安全退出</a></li> 
 		   </ul>
-		   <h3 class="text-muted ">角色管理 <span class="glyphicon glyphicon-hand-right"></span> </h3>
+		   <h3 class="text-muted ">代理人管理 <span class="glyphicon glyphicon-hand-right"></span> </h3>
 		 </div>
 		 
 		 <table class="table table-bordered table-hover text-nowrap">
             <div class="pull-right">
             	<strong id="tishi" class="lead text-primary">双击各行可编辑</strong>
 				<button class="btn btn-primary btn-lg" data-toggle="modal" @click="addFunc()">
-					新增角色
+					新增代理人
 				</button>
             </div>
             <colgroup>
@@ -328,7 +327,7 @@
             </colgroup>
 	            <tr class="text-danger warning">
 	                <th class="text-center">序号</th>
-	                <th class="text-center">角色名称</th>
+	                <th class="text-center">代理人名称</th>
 	                <th class="text-center">备注说明</th>
 	            </tr>
 	            <tr class="text-center" v-for="item in myData"  @dblclick="checkedAline(item.roleID,$index)">
@@ -338,8 +337,13 @@
 					<a href="#" title="{{item.bak}}" style="text-decoration:none;" data-placement="right">{{item.bak.substring(0, 15)+ "..."}}</a>
 					</td>
 	            </tr>
+	            <tr v-show="false">
+	                <td colspan="8" class="text-center text-muted">
+	                      
+	                </td>
+	            </tr>
 	            <tr v-show="myData.length==0" >
-	                <td colspan="3" >
+	                <td colspan="8" >
 	                    <p>暂无数据....</p>
 	                </td>
 	            </tr>
@@ -390,12 +394,12 @@
 					<div class="modal-body">
 					
 			            <div class="form-group">
-			                <label for="id_edit_roleName">角色名称:</label>
-			                <input type="text" id="id_edit_roleName" class="form-control" placeholder="输入角色名称" v-model="edit_roleName" maxlength="20">
+			                <label for="id_edit_roleName">代理人名称:</label>
+			                <input type="text" id="id_edit_roleName" class="form-control" placeholder="输入代理人名称" v-model="edit_roleName" maxlength="20">
 			            </div>
 					 	
 					    <div class="form-group">
-					        <label for="id_edit_bak">角色介绍:</label>
+					        <label for="id_edit_bak">代理人介绍:</label>
 					        <textarea id="id_edit_bak" class="form-control " rows="3"  v-model="edit_bak" maxlength="50"></textarea>
 					    </div>
 					    <div class="form-group" v-show="zNodes.length!=0">

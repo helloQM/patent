@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+	<title>用户管理</title>
+
+	<link rel="shortcut icon" href="../ico/qm.png">
+	<link rel="stylesheet" type="text/css" href="../css/page.css">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrapStyle.css">
+	<link rel="stylesheet" type="text/css" href="../css/comm.css">
+	
+	<script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<!--     <script type="text/javascript" src="../js/comm.js"></script> -->
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/vue-resource.js"></script>
+	
+	<style type="text/css">
+		
+	</style>
+	<script>
+	
+       $(document).ready(function(){
+        
+           $("#tishi").delay(15000).fadeOut(1800); //显示一会提示信息后淡出
+        
+            var v = new Vue({
+                el:'#box',
+                data:{
+                	checkedRoles:[], // 已经选中角色集合
+                	zRoles:[], // 角色集合
+                    myData:[], // 列表数据
+                    totalNum:'',//总条数 
+                    totalPage:'',//总页数 
+                    currentPage:1,//当前页 
+                    changePage:'',//跳转页
+                    pageSize:'5', //一页的容量
+                    loadingFlag:false,//等待条显示或隐藏标识
+                    query_userID:'',
+					query_userName:'',
+					query_userStat:'',
+                    edit_userID:'',
+					edit_userName:'',
+					edit_pwd:'',
+					edit_userRole:'',
+					edit_userEmail:'',
+					edit_userCellPhone:'',
+					edit_userStat:'',
+					edit_userDepartment:'',
+					edit_userGender:'',
+					IDRole:''
+					
+                },
+                computed:{ 
+				     show:function(){ 
+				         return this.totalPage && this.totalPage !=1 
+				     }, 
+				     efont: function() { 
+				       if (this.totalPage <= 7) return false; 
+				       return this.currentPage > 5 
+				     }, 
+				     indexs: function() { 
+				 
+				       var left = 1, 
+				         right = this.totalPage, 
+				         ar = []; 
+				       if (this.totalPage >= 7) { 
+				         if (this.currentPage > 5 && this.currentPage < this.totalPage - 4) { 
+				           left = Number(this.currentPage) - 3; 
+				           right = Number(this.currentPage) + 3; 
+				         } else { 
+				           if (this.currentPage <= 5) { 
+				             left = 1; 
+				             right = 7; 
+				           } else { 
+				             right = this.totalPage; 
+				 
+				             left = this.totalPage - 6; 
+				           } 
+				         } 
+				       } 
+				       while (left <= right) { 
+				         ar.push(left); 
+				         left++; 
+				       } 
+				       return ar; 
+				     }, 
+			    }, 
+                created:function(){
+                },
+                ready:function(){
+	                this.loadData();
+	                this.loadRoles();
+	            },
+                methods:{
+                	//加载页面主题内容
+                    loadData:function(){
+                    	this.loadingFlag = true;
+                    	this.myData = [];//清空
+                        this.$http.post('/listUser',{
+                            currentPage: this.currentPage,
+                            pageSize:this.pageSize,
+                            userID: this.query_userID,
+                            userName:this.query_userName,
+                            userStat:this.query_userStat,
+							nullParam:''//没用的参数，用来生成&。
+                        },{
+                            emulateJSON:true
+                        }).then(function(res){//success
+//                             alert(res.data.roleTotalNum);
+//                             alert(res.data.listRole.length);
+							this.loadingFlag = false;
+							this.totalNum = res.data.roleTotalNum;
+							this.totalPage = parseInt(((this.totalNum-1)/this.pageSize)+1);
+							for(var i = 0;i<res.data.listUser.length;i++){
+// 						    	alert(JSON.stringify(res.data.listUser[i]));//jquery解析json格式数据为string
+							    this.myData.push(res.data.listUser[i]); 
+							}
+							this.checkedRoles=[];//清空
+							this.IDRole='';//清空
+                        },function(res){
+                            //alert("error : "+res.status);//error
+                        });
+                    },
+                    
+                    //加载所有角色的方法
+                    loadRoles:function(b){
+	                		this.$http.post('/listAllRoles',{
+	                            nullParam:''//没用的参数，用来生成&。
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+		                        this.zRoles = [];//清空
+								for(var i = 0;i<res.data.length;i++){
+									this.zRoles.push(res.data[i]);
+								}
+// 								alert(JSON.stringify(this.zRoles));
+								
+	                        },function(res){
+	                            //alert("error : "+res.status);//error
+	                        });
+	                },
+	                
+                    //页面跳转
+                    jumpPage: function(id) {
+					      var reg = /^[1-9]\d*$/
+					      if(id==''||!reg.test(id)||id>this.totalPage){//校验跳转页是否合法
+					      	alert('请填写一个不大于 '+this.totalPage+' 的整数');
+					      	return;
+					      }
+// 					      alert(id);//加载数据操作
+					      this.currentPage = id;
+					      
+					      this.loadData();
+					      this.IDRole='';
+					},
+					
+					//双击一行弹出编辑窗口
+				    dblclickAline(id,index){
+// 				    	alert(id+":"+index);
+				    	$('#myModal').modal('toggle');
+				    	$("#myModalLabel").text("编辑用户");
+				    	$("#id_edit_userID").attr("readonly","readonly");
+// 				    	
+				    	//设置待编辑的各项的值
+						this.edit_userID=this.myData[index].userID;
+						this.edit_userName=this.myData[index].userName;
+// 						this.edit_pwd='qimou123456';
+// 						this.edit_userRole='';
+						this.edit_userEmail=this.myData[index].userEmail;
+						this.edit_userCellPhone=this.myData[index].userCellPhone;
+						this.edit_userStat=this.myData[index].userStat;
+						this.edit_userDepartment=this.myData[index].userDepartment;
+						this.edit_userGender=this.myData[index].userGender;
+						
+						this.$http.post('/listRoleAuthority',{
+							roleID:this.edit_roleID,
+                            nullParam:''//没用的参数，用来生成&。
+                        },{
+                            emulateJSON:true
+                        }).then(function(res){//success
+//                         	alert(res.data);
+							this.checkedNodesBefore = res.data;
+							this.loadAuthority(true);//加载目录树
+                        },function(res){
+                        });
+						
+						$("#myModal").css("height","700px");//设置弹出框的高度
+// 						$(".modal-dialog").css("width","680px");//设置弹出框的宽度
+				    },
+				    
+				    //点击新增按钮弹出新增窗口
+				    addFunc(){
+				    	$('#myModal').modal('toggle');
+						$("#id_edit_userID").removeAttr("readonly");
+						
+						this.edit_userID='';
+						this.edit_userName='';
+						this.edit_pwd='qimou123456';
+						this.edit_userRole='';
+						this.edit_userEmail='';
+						this.edit_userCellPhone='';
+						this.edit_userStat='1';
+						this.edit_userDepartment='';
+						this.edit_userGender='';
+						
+// 						this.loadAuthority(false);//加载目录树
+						$("#myModal").css("height","700px");//设置弹出框的高度
+// 						$(".modal-dialog").css("width","680px");//设置弹出框的宽度
+				    	$("#myModalLabel").text("新增用户");
+				    },
+				    
+				    //单击一行弹出编辑窗口
+				    clickAline(uid,rid){
+// 				    	alert(uid+"|"+rid);
+				    	this.IDRole = uid+"|"+rid;
+// 				    	$(this).attr('checked',true);
+// 				    	this.myData[index].userID
+				    },
+				    
+				    //分配角色
+				    distributeRole(){
+// 				    	alert(this.IDRole);
+						this.checkedRoles=[];//清空
+						
+						if(this.myData.length == 0){
+							return;
+						}
+						if(this.IDRole.length == 0){
+							alert("请先选中一行");
+							return;
+						}						
+						var arr = this.IDRole.split("|");
+				    	
+				    	$('#roleModal').modal('toggle');
+						this.edit_userRole=arr[1];
+						this.edit_userID=arr[0];
+						$("#roleModal").css("height","500px");//设置弹出框的高度
+// 						$(".modal-dialog").css("width","680px");//设置弹出框的宽度
+
+						if(this.edit_userRole.length>0){
+							arr = this.edit_userRole.split("~");
+							for(var i=0;i<arr.length;i++){
+							    this.checkedRoles.push(arr[i]);
+							}
+						}
+						
+						
+				    },
+				    
+				    //提交数据
+				    submitFunc:function(){
+				    	
+				        if($("#myModalLabel").text().indexOf("编辑") != -1){
+							this.loadingFlag = true;
+	                        this.$http.post('/updateUser',{
+								userID: this.edit_userID,
+								userName: this.edit_userName,
+// 								pwd: this.edit_pwd,
+// 								userRole: '',
+								userEmail: this.edit_userEmail,
+								userCellPhone: this.edit_userCellPhone,
+								userStat: this.edit_userStat,
+								userDepartment: this.edit_userDepartment,
+								userGender: this.edit_userGender
+								
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+								this.loadingFlag = false;
+// 								alert(res.data.msg);
+								this.loadData();
+	                        },function(res){
+	                            alert(res.data.msg+" : "+res.status);//error
+	                        });
+				        }
+				        
+				    	if($("#myModalLabel").text().indexOf("新") != -1){
+				    	
+					    	this.loadingFlag = true;
+	                        this.$http.post('/addUser',{
+								userID: this.edit_userID,
+								userName: this.edit_userName,
+								pwd: this.edit_pwd,
+								userRole: '',
+								userEmail: this.edit_userEmail,
+								userCellPhone: this.edit_userCellPhone,
+								userStat: this.edit_userStat,
+								userDepartment: this.edit_userDepartment,
+								userGender: this.edit_userGender
+								
+	                        },{
+	                            emulateJSON:true
+	                        }).then(function(res){//success
+								this.loadingFlag = false;
+// 								alert(res.data.msg);
+								this.loadData();
+	                        },function(res){
+	                            alert(res.data.msg+" : "+res.status);//error
+	                        });
+				    	}
+				    	
+	                    $('#myModal').modal('toggle');
+				    },
+				    
+				    //提交数据分配好的角色
+				    distributeRoleFunc:function(){
+// 				    	alert(this.checkedRoles);
+
+				   		var v = '';
+				   		for(var i=0;i<this.checkedRoles.length;i++){
+					    	v+=this.checkedRoles[i] + "~";
+					    }
+					    if (v.length > 0) {
+						    v = v.substring(0, v.length - 1);
+					    }
+		  
+					    if($("#myRoleModalLabel").text().indexOf("角色") != -1){
+								this.loadingFlag = true;
+		                        this.$http.post('/updateUser',{
+									userID: this.edit_userID,
+									userRole: v
+									
+		                        },{
+		                            emulateJSON:true
+		                        }).then(function(res){//success
+									this.loadingFlag = false;
+// 									alert(res.data.msg);
+									this.loadData();
+		                        },function(res){
+		                            alert(res.data.msg+" : "+res.status);//error
+		                        });
+				        }
+	                    $('#roleModal').modal('toggle');
+	                }
+                }
+            });
+            
+//            
+        });
+        
+    </script>	
+</head>
+
+<body>
+	<div class="container" id="box">
+
+		<div id="loading" class="loading" v-show=loadingFlag>加载中...</div>
+		 <div class="header">
+		   <ul class="nav nav-pills pull-right">
+		     <li class="active"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+		     <li><a href="#">关于</a></li>
+		     <li><a href="/gotoLogoutPage">安全退出</a></li> 
+		   </ul>
+		   <h3 class="text-muted ">用户管理 <span class="glyphicon glyphicon-hand-right"></span> </h3>
+		 </div>
+		 
+		 <form class="form-inline form-group-sm" role="form">
+		    <div class="form-group">
+		 		<label for="id_userID">用户名:</label>
+		 		<input type="text" class="form-control" id="id_userID" v-model="query_userID" @keyup.13="currentPage=1,loadData()" placeholder="请填写用户名" />
+		 	</div>
+		    <div class="form-group">
+		 		<label for="id_userName">姓名:</label>
+		 		<input type="text" class="form-control" id="id_userName" v-model="query_userName" @keyup.13="currentPage=1,loadData()" placeholder="请填写姓名" />
+		 	</div>
+		 	<div class="form-group panel panel-default">
+		 		<label for="id_userStat">状态:</label>
+					<input type="radio" name="optionsRadios" v-model="query_userStat" value="1">
+					正常
+					<input type="radio" name="optionsRadios" v-model="query_userStat" value="2">
+					禁用
+					<input type="radio" name="optionsRadios" v-model="query_userStat" value="" checked>
+					不区分
+		 	</div>
+
+		 	
+		 	<div class="form-group">
+		    	<button type="button" class="btn btn-info"  @click="currentPage=1,loadData()" >查询</button>
+<!-- 		    注意 ： 此处用submit会重复提交，导致数据错误
+		    	<button type="submit" class="btn btn-info"  @click="currentPage=1,loadData()">查询</button>
+-->
+		    </div>
+		</form>
+		
+		 <table class="table table-bordered table-hover text-nowrap">
+            <div class="pull-left">
+				<button class="btn btn-primary btn-lg" data-toggle="modal" @click="addFunc()">
+					新增用户
+				</button>
+            </div>
+            <div class="pull-right">
+            	<strong id="tishi" class="lead text-primary">双击各行可编辑</strong>
+				<button class="btn btn-primary btn-lg" data-toggle="modal" @click="distributeRole()">
+					设置角色
+				</button>
+            </div>
+<!--             <colgroup> -->
+<!-- 	            <col> -->
+<!-- 	            <col> -->
+<!-- 	            <col style="width: 60%"> -->
+<!--             </colgroup> -->
+	            <tr class="text-danger warning">
+	                <th class="text-center">序号</th>
+	                <th class="text-center">用户名</th>
+	                <th class="text-center">姓名</th>
+	                <th class="text-center">部门</th>
+	                <th class="text-center">性别</th>
+	                <th class="text-center">邮箱</th>
+	                <th class="text-center">手机</th>
+	                <th class="text-center">角色</th>
+	                <th class="text-center">状态</th>
+	            </tr>
+	            <tr class="text-center" v-for="item in myData"  @dblclick="dblclickAline(item.userID,$index)" @click="clickAline(item.userID,item.userRole)">
+	                <td><input type="radio" name="perLineRadios" v-model="IDRole" value="{{item.userID}}|{{item.userRole}}">{{$index+1}}</td>
+	                <td>{{item.userID}}</td>
+	                <td>{{item.userName}}</td>
+	                <td>{{item.userDepartment}}</td>
+	                <td>{{item.userGenderShow}}</td>
+	                <td>{{item.userEmail}}</td>
+	                <td>{{item.userCellPhone}}</td>
+	                <td title="{{item.userRoleShow}}">{{item.userRoleShow.substring(0, 15)+ "..."}}</td>
+	                <td>{{item.userStatShow}}</td>
+	            </tr>
+	            <tr v-show="myData.length==0" >
+	                <td colspan="9">
+	                    <p>暂无数据....</p>
+	                </td>
+	            </tr>
+        </table>
+        
+		<div> 
+		    <div class="page"  v-show="show"> 
+		      <div class="pagelist"> 
+		        <span class="jump" v-show="currentPage>1" @click="currentPage--,jumpPage(currentPage)">上一页</span> 
+		        <span v-show="currentPage>5" class="jump" @click="jumpPage(1)">1</span> 
+		        <span class="ellipsis"  v-show="efont">...</span> 
+		        <span class="jump" v-for="num in indexs" :class="{bgprimary:currentPage==num}" @click="jumpPage(num)">{{num}}</span> 
+		        <span class="ellipsis"  v-show="efont&&currentPage<totalPage-4">...</span> 
+		 
+		        <span class="jump" v-show="currentPage<totalPage" @click="currentPage++,jumpPage(currentPage)">下一页</span> 
+		        <span v-show="currentPage<totalPage-1" class="jump" class="jump" @click="jumpPage(totalPage)">末页{{totalPage}}</span> 
+		 
+		        <span class="jumppoint">
+		        <a class="" style="text-decoration:none; cursor:hand "
+						 data-toggle="popover" data-placement="top" 
+						data-content="点击GO按钮可以直接跳到指定的页面">
+					跳转到：
+				</a></span> 
+		        <span class="jumpinp"><input type="text" v-model="changePage"></span> 
+		        <span class="jump gobtn" @click="jumpPage(changePage)">GO</span> 
+		        <span class="jumpinp"> 第{{currentPage}}页     共{{totalPage}}页 </span> 
+		      </div> 
+		    </div> 
+		  </div>
+					  
+					  
+		<div class="footer">
+			<iframe src="../footer.html" width="100%" frameborder="0" scrolling="no"></iframe>
+		</div>
+		
+		<!-- 模态框（Modal） -->
+		<div class="modal fade modalWindow" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+			<div class="modal-dialog" >
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							***
+						</h4>
+					</div>
+					<div class="modal-body">
+					
+			            <div class="form-group">
+			                <label for="id_edit_userID">用户账号【密码默认是qimou123456】:</label>
+			                <input type="text" id="id_edit_userID" class="form-control" placeholder="输入用户账号" v-model="edit_userID" maxlength="20">
+			            </div>
+			            <div class="form-group">
+			                <label for="id_edit_userName">用户姓名:</label>
+			                <input type="text" id="id_edit_userName" class="form-control" placeholder="输入用户姓名" v-model="edit_userName" maxlength="20">
+			            </div>
+			            <div class="form-group">
+			                <label for="id_edit_userDepartment">所属部门:</label>
+			                <input type="text" id="id_edit_userDepartment" class="form-control" placeholder="输入所属部门" v-model="edit_userDepartment" maxlength="20">
+			            </div>
+			            <div class="form-group">
+			                <label for="id_edit_userGender">状态:</label>
+							<input type="radio" name="genderRadios" v-model="edit_userGender" value="1">
+							男
+							<input type="radio" name="genderRadios" v-model="edit_userGender" value="0">
+							女
+			            </div>
+					 	<div class="form-group">
+			                <label for="id_edit_userEmail">邮箱:</label>
+			                <input type="text" id="id_edit_userEmail" class="form-control" placeholder="输入邮箱" v-model="edit_userEmail" maxlength="30">
+			            </div>
+					 	<div class="form-group">
+			                <label for="id_edit_userCellPhone">手机号:</label>
+			                <input type="text" id="id_edit_userCellPhone" class="form-control" placeholder="输入手机号" v-model="edit_userCellPhone" maxlength="11">
+			            </div>
+					 	<div class="form-group">
+			                <label>服务类型:</label>
+							<select class="selectpicker form-control" data-style="btn-info"  title="状态" v-model="edit_userStat">
+								<option value="1" selected="selected">正常</option>
+								<option value="2">禁用</option>
+							 </select>
+			            </div>
+			            
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button type="button" class="btn btn-primary" @click="submitFunc()">提交</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+		
+		<!-- 分配角色模态框（Modal） -->
+		<div class="modal fade modalWindow" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+			<div class="modal-dialog" >
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myRoleModalLabel">
+							角色分配 <span class="glyphicon glyphicon-hand-right"></span>
+						</h4>
+					</div>
+						角色：{{checkedRoles}}|{{IDRole}}
+					<div class="modal-body">
+						<div class="form-horizontal col-md-offset-4" id="login_form">
+			                <div class="col-md-8">
+			                  <div class="form-group " v-for="item in zRoles">
+					                <input type="checkbox" value="{{item.roleID}}" v-model="checkedRoles">
+					                <span class="glyphicon glyphicon-minus"></span>
+					    			<label>{{item.roleName}}</label>
+					           </div>
+		            		</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button type="button" class="btn btn-primary" @click="distributeRoleFunc()">提交</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+		
+		
+	</div>
+
+</body>
+</html>
