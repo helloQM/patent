@@ -23,27 +23,6 @@ public class CustomerServlet {
 	@Autowired
 	private CustomerService customerService;
 	
-//	@Autowired
-//	private JsonUtil jsonUtil;
-	
-	
-	/**
-	 * 
-	 * @author : haoming
-	 * @date : 2018年7月31日下午3:04:18
-	 * @patent com.qimou.sb.web.controller.CustomerServlet.java.singleCustomer
-	 * @returnType : String
-	 * @Desc :获得一个实体
-	 * jsonStr : {"customerID":"***"}
-	 */
-	@RequestMapping("singleCustomer")
-    @ResponseBody
-    public String singleCustomer(@RequestBody String jsonStr,HttpServletRequest request) throws Exception{
-		jsonStr = URLDecoder.decode(jsonStr, "UTF-8");
-		Customer singleCustomer = customerService.singleCustomer(JsonUtil.jsonStr2Map(jsonStr).get("customerID").toString());
-    	return JsonUtil.bean2JsonStr(singleCustomer, null);
-    }
-	
 	/**
 	 * 
 	 * @author : haoming
@@ -51,24 +30,32 @@ public class CustomerServlet {
 	 * @patent com.qimou.sb.web.controller.CustomerServlet.java.listContract
 	 * @returnType : String
 	 * @desc :获得列表
-	 * jsonStr : {"pageNum":"***"}
 	 */
 	@RequestMapping("listCustomer")
 	@ResponseBody
 	public String listCustomer(@RequestBody String jsonStr,HttpServletRequest request){
+		Map<Object, Object> conditionMap = new HashMap<Object, Object>();
 		List<Customer> list = null;
 		Map<Object, Object> returnMap = new HashMap<Object, Object>();
 		try {
-			jsonStr = URLDecoder.decode(jsonStr, "UTF-8");
-			Map<Object, Object> jsonStr2Map = JsonUtil.jsonStr2Map(jsonStr);
-			String pageNum = jsonStr2Map.get("pageNum").toString();
-			list = customerService.listCustomer(Integer.parseInt(pageNum), 10);
-			returnMap.put("userTotalNum", customerService.customerNum());
+			jsonStr = URLDecoder.decode(jsonStr, "UTF-8");//解决中文乱码
+			System.out.println(jsonStr);
+			if(jsonStr.contains("&")){
+				conditionMap = JsonUtil.url2Map(jsonStr, "&");
+			}else{
+				conditionMap = JsonUtil.jsonStr2Map(jsonStr);
+			}
+			int pageSize = Integer.parseInt(conditionMap.get("pageSize").toString());
+			conditionMap.put("pageSize", pageSize);
+			conditionMap.put("startNum", pageSize*(Integer.parseInt(conditionMap.get("currentPage").toString())-1));
+			
+			list = customerService.listCustomer(conditionMap);
+			returnMap.put("customerNum", customerService.customerNum(conditionMap));
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.toString());
 		}
-		return JsonUtil.generalMixJson(list,returnMap,"customerList");
+		
+		return JsonUtil.generalMixJson(list,returnMap,"listCustomer");
 	}
     
 	/**
@@ -78,29 +65,34 @@ public class CustomerServlet {
 	 * @patent com.qimou.sb.web.controller.CustomerServlet.java.addCustomer
 	 * @returnType : String
 	 * @desc :添加实体
-	 * jsonStr : {"$$$":"***","###":"***",...}
 	 */
     @RequestMapping("addCustomer")
     @ResponseBody
     public String addCustomer(@RequestBody String jsonStr,HttpServletRequest request){
-//    	logger.info("jsonStr: "+jsonStr);
     	Map<String, String> returnMap = new HashMap<String, String>();
+    	Map<Object, Object> conditionMap = new HashMap<Object, Object>();
     	String returnStr = "";
     	try {
     		jsonStr = URLDecoder.decode(jsonStr, "UTF-8");
-    		Customer customer = (Customer)JsonUtil.jsonStr2Bean(jsonStr, Customer.class);
-    		if(customerService.addCustomer(customer)>=1){
+    		if(jsonStr.contains("&")){
+				conditionMap = JsonUtil.url2Map(jsonStr, "&");
+			}else{
+				conditionMap = JsonUtil.jsonStr2Map(jsonStr);
+			}
+    		conditionMap.put("userID", request.getSession().getAttribute("userID"));
+    		conditionMap.put("userName", request.getSession().getAttribute("userName"));
+    		if(customerService.addCustomer(conditionMap)>=1){
     			returnMap.put("code", "0");
-    			returnMap.put("msg", "添加成功");
+				returnMap.put("msg", "新增成功");
     		}
-		} catch (Exception e) {
-			returnMap.put("code", "1");
-			returnMap.put("msg", "添加失败");
-			logger.error(e.toString());
-		} finally{
-			returnStr = JsonUtil.map2JsonStr(returnMap);
-		}
-
+    	} catch (Exception e) {
+    		returnMap.put("code", "1");
+			returnMap.put("msg", "新增失败");
+    		logger.error(e.toString());
+    	} finally{
+    		returnStr = JsonUtil.map2JsonStr(returnMap);
+    	}
+    	
     	return returnStr;
     }
   
@@ -111,17 +103,22 @@ public class CustomerServlet {
      * @patent com.qimou.sb.web.controller.CustomerServlet.java.updateCustomer
      * @returnType : String
      * @Desc :修改实体
-     * jsonStr : {"$$$":"***","###":"***",...}
      */
     @RequestMapping("updateCustomer")
     @ResponseBody
     public String updateCustomer(@RequestBody String jsonStr,HttpServletRequest request){
     	Map<String, String> returnMap = new HashMap<String, String>();
+    	Map<Object, Object> conditionMap = new HashMap<Object, Object>();
     	String returnStr = "";
     	try {
     		jsonStr = URLDecoder.decode(jsonStr, "UTF-8");
-    		Customer customer = (Customer)JsonUtil.jsonStr2Bean(jsonStr, Customer.class);
-    		if(customerService.updateCustomer(customer)>=1){
+    		System.out.println(jsonStr);
+    		if(jsonStr.contains("&")){
+				conditionMap = JsonUtil.url2Map(jsonStr, "&");
+			}else{
+				conditionMap = JsonUtil.jsonStr2Map(jsonStr);
+			}
+    		if(customerService.updateCustomer(conditionMap)>=1){
     			returnMap.put("code", "0");
     			returnMap.put("msg", "修改成功");
     		}

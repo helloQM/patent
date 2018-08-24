@@ -5,17 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-	<title>用户管理</title>
+	<title>客户主体信息管理</title>
 
 	<link rel="shortcut icon" href="../ico/qm.png">
 	<link rel="stylesheet" type="text/css" href="../css/page.css">
 	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../css/bootstrapStyle.css">
 	<link rel="stylesheet" type="text/css" href="../css/comm.css">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap-select.min.css">
 	
 	<script type="text/javascript" src="../js/jquery.min.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-<!--     <script type="text/javascript" src="../js/comm.js"></script> -->
+    <script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="../js/comm.js"></script>
 	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/vue-resource.js"></script>
 	
@@ -26,6 +28,13 @@
 	
        $(document).ready(function(){
         
+	      var searchUrl = window.location.href;
+// 		  alert(searchUrl);
+		  var searchData = searchUrl.split("="); //截取 url中的“=”,获得“=”后面的参数
+// 		  alert(searchData);
+		  var custID = decodeURI(searchData[1]); //decodeURI解码
+// 		  alert(custID);
+		
            $("#tishi").delay(15000).fadeOut(1800); //显示一会提示信息后淡出
         
             var v = new Vue({
@@ -160,10 +169,10 @@
 					},
 					
 					//双击一行弹出编辑窗口
-				    dblclickAline:function(id,index){
+				    dblclickAline(id,index){
 // 				    	alert(id+":"+index);
 				    	$('#myModal').modal('toggle');
-				    	$("#myModalLabel").text("编辑用户");
+				    	$("#myModalLabel").text("编辑客户主体信息");
 				    	$("#id_edit_userID").attr("readonly","readonly");
 // 				    	
 				    	//设置待编辑的各项的值
@@ -194,7 +203,7 @@
 				    },
 				    
 				    //点击新增按钮弹出新增窗口
-				    addFunc:function(){
+				    addFunc(){
 				    	$('#myModal').modal('toggle');
 						$("#id_edit_userID").removeAttr("readonly");
 						
@@ -211,11 +220,11 @@
 // 						this.loadAuthority(false);//加载目录树
 						$("#myModal").css("height","700px");//设置弹出框的高度
 // 						$(".modal-dialog").css("width","680px");//设置弹出框的宽度
-				    	$("#myModalLabel").text("新增用户");
+				    	$("#myModalLabel").text("新增客户主体信息");
 				    },
 				    
 				    //单击一行弹出编辑窗口
-				    clickAline:function(uid,rid){
+				    clickAline(uid,rid){
 // 				    	alert(uid+"|"+rid);
 				    	this.IDRole = uid+"|"+rid;
 // 				    	$(this).attr('checked',true);
@@ -223,7 +232,7 @@
 				    },
 				    
 				    //分配角色
-				    distributeRole:function(){
+				    distributeRole(){
 // 				    	alert(this.IDRole);
 						this.checkedRoles=[];//清空
 						
@@ -272,9 +281,7 @@
 	                            emulateJSON:true
 	                        }).then(function(res){//success
 								this.loadingFlag = false;
-								if(res.data.code!=0){
-									alert(res.data.msg);
-								}
+// 								alert(res.data.msg);
 								this.loadData();
 	                        },function(res){
 	                            alert(res.data.msg+" : "+res.status);//error
@@ -299,10 +306,7 @@
 	                            emulateJSON:true
 	                        }).then(function(res){//success
 								this.loadingFlag = false;
-								if(res.data.code!=0){
-									alert(res.data.msg);
-								}
-								
+// 								alert(res.data.msg);
 								this.loadData();
 	                        },function(res){
 	                            alert(res.data.msg+" : "+res.status);//error
@@ -361,13 +365,13 @@
 		     <li><a href="#">关于</a></li>
 		     <li><a href="/gotoLogoutPage">安全退出</a></li> 
 		   </ul>
-		   <h3 class="text-muted ">用户管理 <span class="glyphicon glyphicon-hand-right"></span> </h3>
+		   <h3 class="text-muted ">客户主体信息管理 <span class="glyphicon glyphicon-hand-right"></span> </h3>
 		 </div>
 		 
 		 <form class="form-inline form-group-sm" role="form">
 		    <div class="form-group">
-		 		<label for="id_userID">用户名:</label>
-		 		<input type="text" class="form-control" id="id_userID" v-model="query_userID" @keyup.13="currentPage=1,loadData()" placeholder="请填写用户名" />
+		 		<label for="id_userID">客户主体信息名:</label>
+		 		<input type="text" class="form-control" id="id_userID" v-model="query_userID" @keyup.13="currentPage=1,loadData()" placeholder="请填写客户主体信息名" />
 		 	</div>
 		    <div class="form-group">
 		 		<label for="id_userName">姓名:</label>
@@ -382,6 +386,13 @@
 					<input type="radio" name="optionsRadios" v-model="query_userStat" value="" checked>
 					不区分
 		 	</div>
+		 	
+		 	<div class="form-group">
+			     <label>选择客户</label>
+			     <select name="" id="" class="selectpicker show-tick " title='请选择***(必选)' data-live-search="true">
+			    	<option v-for="item in myData" value="{{item.userID}}">{{item.userName}}</option>
+			     </select>
+			</div>
 
 		 	
 		 	<div class="form-group">
@@ -395,7 +406,7 @@
 		 <table class="table table-bordered table-hover text-nowrap">
             <div class="pull-left">
 				<button class="btn btn-primary btn-lg" data-toggle="modal" @click="addFunc()">
-					新增用户
+					新增客户主体信息
 				</button>
             </div>
             <div class="pull-right">
@@ -411,7 +422,7 @@
 <!--             </colgroup> -->
 	            <tr class="text-danger warning">
 	                <th class="text-center">序号</th>
-	                <th class="text-center">用户名</th>
+	                <th class="text-center">客户主体信息名</th>
 	                <th class="text-center">姓名</th>
 	                <th class="text-center">部门</th>
 	                <th class="text-center">性别</th>
@@ -483,12 +494,12 @@
 					<div class="modal-body">
 					
 			            <div class="form-group">
-			                <label for="id_edit_userID">用户账号【密码默认是qimou123456】:</label>
-			                <input type="text" id="id_edit_userID" class="form-control" placeholder="输入用户账号" v-model="edit_userID" maxlength="20">
+			                <label for="id_edit_userID">客户主体信息账号【密码默认是qimou123456】:</label>
+			                <input type="text" id="id_edit_userID" class="form-control" placeholder="输入客户主体信息账号" v-model="edit_userID" maxlength="20">
 			            </div>
 			            <div class="form-group">
-			                <label for="id_edit_userName">用户姓名:</label>
-			                <input type="text" id="id_edit_userName" class="form-control" placeholder="输入用户姓名" v-model="edit_userName" maxlength="20">
+			                <label for="id_edit_userName">客户主体信息姓名:</label>
+			                <input type="text" id="id_edit_userName" class="form-control" placeholder="输入客户主体信息姓名" v-model="edit_userName" maxlength="20">
 			            </div>
 			            <div class="form-group">
 			                <label for="id_edit_userDepartment">所属部门:</label>

@@ -105,4 +105,5 @@ org.thymeleaf.exceptions.TemplateInputException:https://blog.csdn.net/Lin_xiaofe
 https://blog.csdn.net/u013378306/article/details/52944780
 
 正式环境调优：
-MyBatisConfig.java中  setIdleMaxAgeInMinutes的值设置为0
+1.MyBatisConfig.java中  setIdleMaxAgeInMinutes的值设置为0
+2.角色新加后最好重启应用。否则在某用户拥有全部角色时会少显示某一个角色。只是显示问题，不影响业务。
