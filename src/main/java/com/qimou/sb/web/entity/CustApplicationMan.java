@@ -11,7 +11,7 @@ public class CustApplicationMan implements Serializable{
 	private String appIDCode = null ;//申请人证件号
 	private String appName = null ;//申请人名称
 	private String appType = null ;//申请 人类型
-	private String cidyAddr = null ;//省，市，区的地址
+	private String cityAddr = null ;//省，市，区的地址
 	private String customerID = null ;//客户ID
 	private int isRecord = 0 ;//是否备案【0，不备案；1，备案】
 	private int recordValidYear = 0 ;//备案有效期的结束时间【年份】
@@ -52,11 +52,11 @@ public class CustApplicationMan implements Serializable{
 	public void setAppType(String appType) {
 		this.appType = appType;
 	}
-	public String getCidyAddr() {
-		return cidyAddr;
+	public String getCityAddr() {
+		return cityAddr;
 	}
-	public void setCidyAddr(String cidyAddr) {
-		this.cidyAddr = cidyAddr;
+	public void setCityAddr(String cityAddr) {
+		this.cityAddr = cityAddr;
 	}
 	public String getCustomerID() {
 		return customerID;

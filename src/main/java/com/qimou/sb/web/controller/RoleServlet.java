@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.qimou.sb.web.service.RoleService;
 import com.qimou.sb.web.tool.JsonUtil;
 
-import javassist.expr.NewArray;
-
 @Controller
 public class RoleServlet {
 	private static final Logger logger = LoggerFactory.getLogger(RoleServlet.class);

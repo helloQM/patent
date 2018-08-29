@@ -1,4 +1,5 @@
-﻿https://github.com/ityouknow/spring-boot-examples
+﻿
+https://github.com/ityouknow/spring-boot-examples
 
 springboot获得prop中的变量的3中方式:
 https://blog.csdn.net/qq_37171353/article/details/78005845
@@ -87,6 +88,20 @@ bootstrap校验:
 https://www.cnblogs.com/xiaoyuersdch/p/8251519.html
 https://blog.csdn.net/asd245025733/article/details/78061577?locationNum=7&fps=1
 https://blog.csdn.net/u014525494/article/details/54971890
+
+带搜索的下拉框：
+ https://blog.csdn.net/zzwwjjdj1/article/details/79257661
+ https://blog.csdn.net/u010657094/article/details/53587919
+ https://www.cnblogs.com/zou1234/p/7891714.html
+https://gitee.com/52juzi/selectpage
+https://blog.csdn.net/wgp15732622312/article/details/75948699
+https://blog.csdn.net/princeluan/article/details/69054456
+
+tab标签页：
+  http://www.runoob.com/bootstrap/bootstrap-tab-plugin.html
+  https://v3.bootcss.com/javascript/#tabs
+  http://www.runoob.com/jqueryui/example-tabs.html
+  http://www.jq22.com/jquery-info591
 
 bootstrap 轮播图片:
 https://blog.csdn.net/qq_42451979/article/details/80741028

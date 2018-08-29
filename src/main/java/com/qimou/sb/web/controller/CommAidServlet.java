@@ -2,6 +2,7 @@ package com.qimou.sb.web.controller;
 
 import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -54,12 +55,14 @@ public class CommAidServlet {
 				conditionMap = JsonUtil.jsonStr2Map(jsonStr);
 			}
 			listCityCode = commService.listCityCode(conditionMap);
+			System.out.println("listCityCode : "+listCityCode);
 		} catch (Exception e) {
 			logger.error(e.toString());
 		}
 		
 		return JsonUtil.list2JsonStr(listCityCode);
 	}
+	
 	
 	@RequestMapping("listAllRoles")
 	public String listAllRoles(HttpServletRequest request){

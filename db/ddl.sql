@@ -31,228 +31,228 @@ drop table if exists bs_patent_usertask_t;
 /*==============================================================*/
 create table bs_patent_accounterDetail_t
 (
-   customerID           varchar(36) comment 'å®¢æˆ·ID',
-   userID               varchar(20) comment 'ç”¨æˆ·ID',
-   optionTime           timestamp default CURRENT_TIMESTAMP comment 'æ“ä½œæ—¶é—´',
-   moneyNum             int(11) comment 'èµ„é‡‘æ•°å€¼ã€å•ä½ï¼šå…ƒã€‘',
-   moneyDirection       char comment 'èµ„é‡‘æµåŠ¨æ–¹å‘ã€+ï¼šå…¥è´¦ï¼› -ï¼šå‡ºè´¦ã€‘',
-   descReason           varchar(200) comment 'èµ„é‡‘æµåŠ¨çš„åŸå› æè¿°'
+   customerID           varchar(36) comment '¿Í»§ID',
+   userID               varchar(20) comment 'ÓÃ»§ID',
+   optionTime           timestamp default CURRENT_TIMESTAMP comment '²Ù×÷Ê±¼ä',
+   moneyNum             int(11) comment '×Ê½ğÊıÖµ¡¾µ¥Î»£ºÔª¡¿',
+   moneyDirection       char comment '×Ê½ğÁ÷¶¯·½Ïò¡¾+£ºÈëÕË£» -£º³öÕË¡¿',
+   descReason           varchar(200) comment '×Ê½ğÁ÷¶¯µÄÔ­ÒòÃèÊö'
 );
 
-alter table bs_patent_accounterDetail_t comment 'è´¦æˆ·æµæ°´æ˜ç»†è¡¨';
+alter table bs_patent_accounterDetail_t comment 'ÕË»§Á÷Ë®Ã÷Ï¸±í';
 
 /*==============================================================*/
 /* Table: bs_patent_agent_t                                     */
 /*==============================================================*/
 create table bs_patent_agent_t
 (
-   userID               varchar(20) comment 'ç”¨æˆ·IDï¼Œç”¨ä½œç™»å½•è´¦å·',
-   skillArea            varchar(30) comment 'æŠ€æœ¯é¢†åŸŸï¼šç”µå­â€˜æœºæ¢°ï¼Œç”Ÿç‰©åŒ»è¯ç­‰',
-   jobNum               varchar(30) comment 'è¥ä¸šæ‰§ç…§å·'
+   userID               varchar(20) comment 'ÓÃ»§ID£¬ÓÃ×÷µÇÂ¼ÕËºÅ',
+   skillArea            varchar(30) comment '¼¼ÊõÁìÓò£ºµç×Ó¡®»úĞµ£¬ÉúÎïÒ½Ò©µÈ',
+   jobNum               varchar(30) comment 'ÓªÒµÖ´ÕÕºÅ'
 );
 
-alter table bs_patent_agent_t comment 'ä»£ç†äººè¯¦æƒ…ä¿¡æ¯è¡¨';
+alter table bs_patent_agent_t comment '´úÀíÈËÏêÇéĞÅÏ¢±í';
 
 /*==============================================================*/
 /* Table: bs_patent_authority_t                                 */
 /*==============================================================*/
 create table bs_patent_authority_t
 (
-   id                   int(3) not null comment 'ç›®å½•ID',
-   pId                  int(3) comment 'çˆ¶ç›®å½•ID',
-   name                 varchar(20) comment 'ç›®å½•åç§°',
-   path                 varchar(50) comment 'ç›®å½•ç›¸å¯¹è·¯å¾„',
-   description          varchar(100) comment 'ç›®å½•åŠŸèƒ½ä»‹ç»',
-   open                 int(1) comment 'æ˜¯å¦å±•å¼€æ ‡è¯†ï¼š0æ ‡è¯†ä¸å±•å¼€ï¼Œ1æ ‡è¯†å±•å¼€',
+   id                   int(3) not null comment 'Ä¿Â¼ID',
+   pId                  int(3) comment '¸¸Ä¿Â¼ID',
+   name                 varchar(20) comment 'Ä¿Â¼Ãû³Æ',
+   path                 varchar(50) comment 'Ä¿Â¼Ïà¶ÔÂ·¾¶',
+   description          varchar(100) comment 'Ä¿Â¼¹¦ÄÜ½éÉÜ',
+   open                 int(1) comment 'ÊÇ·ñÕ¹¿ª±êÊ¶£º0±êÊ¶²»Õ¹¿ª£¬1±êÊ¶Õ¹¿ª',
    primary key (id)
 );
 
-alter table bs_patent_authority_t comment 'é¡µé¢æƒé™è¡¨';
+alter table bs_patent_authority_t comment 'Ò³ÃæÈ¨ÏŞ±í';
 
 /*==============================================================*/
 /* Table: bs_patent_cityCodeDict_t                              */
 /*==============================================================*/
 create table bs_patent_cityCodeDict_t
 (
-   cityCode             varchar(6) not null comment 'ç¼–ç ã€å…­ä½ä¸€ä½“ã€‘',
-   pid                  varchar(6) comment 'çˆ¶ä¸€çº§ç¼–ç ã€å…­ä½ä¸€ä½“ã€‘',
-   cityName             varchar(20) comment 'åç§°',
+   cityCode             varchar(6) not null comment '±àÂë¡¾ÁùÎ»Ò»Ìå¡¿',
+   pid                  varchar(6) comment '¸¸Ò»¼¶±àÂë¡¾ÁùÎ»Ò»Ìå¡¿',
+   cityName             varchar(20) comment 'Ãû³Æ',
    primary key (cityCode)
 );
 
-alter table bs_patent_cityCodeDict_t comment 'åŸå¸‚ç¼–ç å­—å…¸è¡¨';
+alter table bs_patent_cityCodeDict_t comment '³ÇÊĞ±àÂë×Öµä±í';
 
 /*==============================================================*/
 /* Table: bs_patent_contract_t                                  */
 /*==============================================================*/
 create table bs_patent_contract_t
 (
-   contractID           varchar(36) comment 'åˆåŒIDã€ä¸€ä¸ªåˆåŒä¸‹æœ‰ä¸€ä¸ªæˆ–å¤šä¸ªä»»åŠ¡ã€‘',
-   contractName         varchar(30) comment 'åˆåŒåç§°',
-   taskID               varchar(36) not null comment 'ä»»åŠ¡ID',
-   taskName             varchar(30) comment 'ä»»åŠ¡åç§°',
-   userID               varchar(20) comment 'ç”¨æˆ·IDã€åˆ›å»ºäººã€‘',
-   customerID           varchar(36) comment 'å®¢æˆ·ID',
-   stat                 int(2) comment 'ä»»åŠ¡çŠ¶æ€ã€10ï¼šæ–°å»ºä»»åŠ¡ï¼›11ï¼šå®¡æ ¸é€šè¿‡ï¼›12ï¼šè·å¾—äº¤åº•ä¹¦ï¼›
-                                20ï¼šåˆ†é…ä¸­ï¼›14ï¼šæ’°å†™ä¸­ï¼›15ï¼šæ’°å†™å®¡æ ¸é€šè¿‡ï¼›
-                                30ï¼šé€’äº¤ä¸­ã€å½¢æˆäº”ä¹¦ã€‘ï¼›31ï¼šè·å¾—å—ç†é€šçŸ¥ä¹¦ï¼›32ï¼šé¦–æ¬¡é©³å›ï¼›33ï¼šç¬¬äºŒæ¬¡é©³å›ï¼›34ï¼šç¬¬ä¸‰æ¬¡é©³å›ï¼›36ï¼šå›½å®¶ä¸“åˆ©å±€å®¡æ ¸é€šè¿‡ã€‘',
-   pathJDS              varchar(100) comment 'äº¤åº•ä¹¦å­˜æ”¾çš„ç›¸å¯¹è·¯å¾„',
-   createTime           timestamp default CURRENT_TIMESTAMP comment 'åˆåŒåˆ›å»ºæ—¶é—´',
+   contractID           varchar(36) comment 'ºÏÍ¬ID¡¾Ò»¸öºÏÍ¬ÏÂÓĞÒ»¸ö»ò¶à¸öÈÎÎñ¡¿',
+   contractName         varchar(30) comment 'ºÏÍ¬Ãû³Æ',
+   taskID               varchar(36) not null comment 'ÈÎÎñID',
+   taskName             varchar(30) comment 'ÈÎÎñÃû³Æ',
+   userID               varchar(20) comment 'ÓÃ»§ID¡¾´´½¨ÈË¡¿',
+   customerID           varchar(36) comment '¿Í»§ID',
+   stat                 int(2) comment 'ÈÎÎñ×´Ì¬¡¾10£ºĞÂ½¨ÈÎÎñ£»11£ºÉóºËÍ¨¹ı£»12£º»ñµÃ½»µ×Êé£»
+                                20£º·ÖÅäÖĞ£»14£º×«Ğ´ÖĞ£»15£º×«Ğ´ÉóºËÍ¨¹ı£»
+                                30£ºµİ½»ÖĞ¡¾ĞÎ³ÉÎåÊé¡¿£»31£º»ñµÃÊÜÀíÍ¨ÖªÊé£»32£ºÊ×´Î²µ»Ø£»33£ºµÚ¶ş´Î²µ»Ø£»34£ºµÚÈı´Î²µ»Ø£»36£º¹ú¼Ò×¨Àû¾ÖÉóºËÍ¨¹ı¡¿',
+   pathJDS              varchar(100) comment '½»µ×Êé´æ·ÅµÄÏà¶ÔÂ·¾¶',
+   createTime           timestamp default CURRENT_TIMESTAMP comment 'ºÏÍ¬´´½¨Ê±¼ä',
    primary key (taskID)
 );
 
-alter table bs_patent_contract_t comment 'åˆåŒçŠ¶æ€è¡¨';
+alter table bs_patent_contract_t comment 'ºÏÍ¬×´Ì¬±í';
 
 /*==============================================================*/
 /* Table: bs_patent_cust_InventMan_t                            */
 /*==============================================================*/
 create table bs_patent_cust_InventMan_t
 (
-   customerID           varchar(36) comment 'å®¢æˆ·ID',
-   inventID             varchar(36) not null comment 'å‘æ˜äººPK',
-   inventCountry        varchar(10) comment 'å‘æ˜äººæ‰€å±å›½å®¶',
-   inventName           varchar(30) comment 'å‘æ˜äººåç§°',
-   inventIDCode         varchar(20) comment 'å‘æ˜äººè¯ä»¶å·',
+   customerID           varchar(36) comment '¿Í»§ID',
+   inventID             varchar(36) not null comment '·¢Ã÷ÈËPK',
+   inventCountry        varchar(10) comment '·¢Ã÷ÈËËùÊô¹ú¼Ò',
+   inventName           varchar(30) comment '·¢Ã÷ÈËÃû³Æ',
+   inventIDCode         varchar(20) comment '·¢Ã÷ÈËÖ¤¼şºÅ',
    primary key (inventID)
 );
 
-alter table bs_patent_cust_InventMan_t comment 'å®¢æˆ·å‘æ˜äººä¿¡æ¯è¡¨';
+alter table bs_patent_cust_InventMan_t comment '¿Í»§·¢Ã÷ÈËĞÅÏ¢±í';
 
 /*==============================================================*/
 /* Table: bs_patent_cust_applicationMan_t                       */
 /*==============================================================*/
 create table bs_patent_cust_applicationMan_t
 (
-   customerID           varchar(36) comment 'å®¢æˆ·ID',
-   appID                varchar(36) not null comment 'ç”³è¯·äººpk',
-   appCountry           varchar(10) comment 'æ‰€å±å›½å®¶',
-   appType              varchar(30) comment 'ç”³è¯· äººç±»å‹',
-   appName              varchar(30) comment 'ç”³è¯·äººåç§°',
-   appIDCode            varchar(20) comment 'ç”³è¯·äººè¯ä»¶å·',
-   isRecord             int(1) comment 'æ˜¯å¦å¤‡æ¡ˆã€0ï¼Œä¸å¤‡æ¡ˆï¼›1ï¼Œå¤‡æ¡ˆã€‘',
-   recordValidYear      int(4) comment 'å¤‡æ¡ˆæœ‰æ•ˆæœŸçš„ç»“æŸæ—¶é—´ã€å¹´ä»½ã€‘',
-   cidyAddr             varchar(100) comment 'çœï¼Œå¸‚ï¼ŒåŒºçš„åœ°å€',
-   address              varchar(100) comment 'è¯¦ç»†çš„é‚®å¯„åœ°å€',
-   zipCode              varchar(20) comment 'é‚®ç¼–',
+   customerID           varchar(36) comment '¿Í»§ID',
+   appID                varchar(36) not null comment 'ÉêÇëÈËpk',
+   appCountry           varchar(10) comment 'ËùÊô¹ú¼Ò',
+   appType              varchar(30) comment 'ÉêÇë ÈËÀàĞÍ',
+   appName              varchar(30) comment 'ÉêÇëÈËÃû³Æ',
+   appIDCode            varchar(20) comment 'ÉêÇëÈËÖ¤¼şºÅ',
+   isRecord             int(1) comment 'ÊÇ·ñ±¸°¸¡¾0£¬²»±¸°¸£»1£¬±¸°¸¡¿',
+   recordValidYear      int(4) comment '±¸°¸ÓĞĞ§ÆÚµÄ½áÊøÊ±¼ä¡¾Äê·İ¡¿',
+   cityAddr             varchar(100) comment 'Ê¡£¬ÊĞ£¬ÇøµÄµØÖ·',
+   address              varchar(100) comment 'ÏêÏ¸µÄÓÊ¼ÄµØÖ·',
+   zipCode              varchar(20) comment 'ÓÊ±à',
    primary key (appID)
 );
 
-alter table bs_patent_cust_applicationMan_t comment 'å®¢æˆ·ç”³è¯·äººä¿¡æ¯è¡¨';
+alter table bs_patent_cust_applicationMan_t comment '¿Í»§ÉêÇëÈËĞÅÏ¢±í';
 
 /*==============================================================*/
 /* Table: bs_patent_cust_linkMan_t                              */
 /*==============================================================*/
 create table bs_patent_cust_linkMan_t
 (
-   customerID           varchar(36) comment 'å®¢æˆ·ID',
-   linkID               varchar(36) not null comment 'è”ç³»äººpk',
-   linkName             varchar(30) comment 'è”ç³»äººåç§°',
-   nickName             varchar(20) comment 'è”ç³»äººæ˜µç§°ã€ç§°è°“ã€‘',
-   linkCellPhone        varchar(11) comment 'è”ç³»äººæ‰‹æœºå·',
-   linkEmail            varchar(30) comment 'è”ç³»äººé‚®ç®±',
-   linkQQ               varchar(15) comment 'è”ç³»äººQQ',
-   linkWeChat           varchar(15) comment 'è”ç³»äººå¾®ä¿¡',
-   linkTel              varchar(20) comment 'è”ç³»äººåº§æœºå·',
+   customerID           varchar(36) comment '¿Í»§ID',
+   linkID               varchar(36) not null comment 'ÁªÏµÈËpk',
+   linkName             varchar(30) comment 'ÁªÏµÈËÃû³Æ',
+   nickName             varchar(20) comment 'ÁªÏµÈËêÇ³Æ¡¾³ÆÎ½¡¿',
+   linkCellPhone        varchar(11) comment 'ÁªÏµÈËÊÖ»úºÅ',
+   linkEmail            varchar(30) comment 'ÁªÏµÈËÓÊÏä',
+   linkQQ               varchar(15) comment 'ÁªÏµÈËQQ',
+   linkWeChat           varchar(15) comment 'ÁªÏµÈËÎ¢ĞÅ',
+   linkTel              varchar(20) comment 'ÁªÏµÈË×ù»úºÅ',
    primary key (linkID)
 );
 
-alter table bs_patent_cust_linkMan_t comment 'å®¢æˆ·è”ç³»äººä¿¡æ¯è¡¨';
+alter table bs_patent_cust_linkMan_t comment '¿Í»§ÁªÏµÈËĞÅÏ¢±í';
 
 /*==============================================================*/
 /* Table: bs_patent_customer_t                                  */
 /*==============================================================*/
 create table bs_patent_customer_t
 (
-   customerID           varchar(36) not null comment 'å®¢æˆ·ID',
-   customerCode         varchar(20) comment 'å®¢æˆ·ç¼–å·',
-   userID               varchar(20) comment 'ç”¨æˆ·IDã€åˆ›å»ºäººï¼šé”€å”®è§’è‰²ã€‘',
-   userName             varchar(30) comment 'ç”¨æˆ·å§“åã€åˆ›å»ºäººï¼šé”€å”®è§’è‰²ã€‘',
-   customerName         varchar(100) comment 'å®¢æˆ·åç§°',
-   customerType         varchar(20) comment 'å®¢æˆ·ç±»å‹',
-   linkMan              varchar(30) comment 'è”ç³»äººå§“å',
-   linkCellPhone        varchar(11) comment 'è”ç³»äººæ‰‹æœºå·',
-   linkEmail            varchar(30) comment 'è”ç³»äººé‚®ç®±åœ°å€',
-   communicateType      varchar(10) comment 'æ²Ÿé€šæ–¹å¼',
-   createTime           timestamp default CURRENT_TIMESTAMP comment 'å®¢æˆ·åˆ›å»ºæ—¶é—´',
-   customerStat         int comment 'å®¢æˆ·çŠ¶æ€ï¼šã€1ï¼Œæ­£å¸¸ï¼Œ2ï¼Œç¦ç”¨ã€‘',
+   customerID           varchar(36) not null comment '¿Í»§ID',
+   customerCode         varchar(20) comment '¿Í»§±àºÅ',
+   userID               varchar(20) comment 'ÓÃ»§ID¡¾´´½¨ÈË£ºÏúÊÛ½ÇÉ«¡¿',
+   userName             varchar(30) comment 'ÓÃ»§ĞÕÃû¡¾´´½¨ÈË£ºÏúÊÛ½ÇÉ«¡¿',
+   customerName         varchar(100) comment '¿Í»§Ãû³Æ',
+   customerType         varchar(20) comment '¿Í»§ÀàĞÍ',
+   linkMan              varchar(30) comment 'ÁªÏµÈËĞÕÃû',
+   linkCellPhone        varchar(11) comment 'ÁªÏµÈËÊÖ»úºÅ',
+   linkEmail            varchar(30) comment 'ÁªÏµÈËÓÊÏäµØÖ·',
+   communicateType      varchar(10) comment '¹µÍ¨·½Ê½',
+   createTime           timestamp default CURRENT_TIMESTAMP comment '¿Í»§´´½¨Ê±¼ä',
+   customerStat         int comment '¿Í»§×´Ì¬£º¡¾1£¬Õı³££¬2£¬½ûÓÃ¡¿',
    primary key (customerID)
 );
 
-alter table bs_patent_customer_t comment 'å®¢æˆ·ä¿¡æ¯è¡¨';
+alter table bs_patent_customer_t comment '¿Í»§ĞÅÏ¢±í';
 
 /*==============================================================*/
 /* Table: bs_patent_roleAuthority_t                             */
 /*==============================================================*/
 create table bs_patent_roleAuthority_t
 (
-   id                   varchar(10) comment 'é¡µé¢ID',
-   roleID               int comment 'è§’è‰²ID'
+   id                   varchar(10) comment 'Ò³ÃæID',
+   roleID               int comment '½ÇÉ«ID'
 );
 
-alter table bs_patent_roleAuthority_t comment 'è§’è‰²æƒé™ä¸­é—´iè¡¨';
+alter table bs_patent_roleAuthority_t comment '½ÇÉ«È¨ÏŞÖĞ¼äi±í';
 
 /*==============================================================*/
 /* Table: bs_patent_roleDict_t                                  */
 /*==============================================================*/
 create table bs_patent_roleDict_t
 (
-   roleID               int not null auto_increment comment 'è§’è‰²ID',
-   roleName             varchar(20) comment 'è§’è‰²åç§°',
-   bak                  varchar(50) comment 'å¤‡æ³¨è¯´æ˜',
+   roleID               int not null auto_increment comment '½ÇÉ«ID',
+   roleName             varchar(20) comment '½ÇÉ«Ãû³Æ',
+   bak                  varchar(50) comment '±¸×¢ËµÃ÷',
    primary key (roleID)
 );
 
-alter table bs_patent_roleDict_t comment 'è§’è‰²å­—å…¸è¡¨';
+alter table bs_patent_roleDict_t comment '½ÇÉ«×Öµä±í';
 
 /*==============================================================*/
 /* Table: bs_patent_servicePriceDict_t                          */
 /*==============================================================*/
 create table bs_patent_servicePriceDict_t
 (
-   serviceID            varchar(36) not null comment 'æœåŠ¡ID',
-   cityCode             varchar(6) comment 'åŸå¸‚ç¼–ç ã€å…­ä½ä¸€ä½“ã€‘',
-   serviceCode          varchar(16) comment 'æœåŠ¡ç¼–ç ',
-   serviceName          varchar(30) comment 'æœåŠ¡åç§°',
-   serviceBak           varchar(50) comment 'æœåŠ¡ä»‹ç»',
-   serviceType          varchar(50) comment 'æœåŠ¡ç±»å‹',
-   priceNumMin          int(10) comment 'ä»·æ ¼ä¸‹é™æ•°å€¼ã€å•ä½ï¼šå…ƒã€‘',
-   priceNumMax          int(11) comment 'ä»·æ ¼ä¸Šé™æ•°å€¼ã€å•ä½ï¼šå…ƒã€‘',
+   serviceID            varchar(36) not null comment '·şÎñID',
+   cityCode             varchar(6) comment '³ÇÊĞ±àÂë¡¾ÁùÎ»Ò»Ìå¡¿',
+   serviceCode          varchar(16) comment '·şÎñ±àÂë',
+   serviceName          varchar(30) comment '·şÎñÃû³Æ',
+   serviceBak           varchar(50) comment '·şÎñ½éÉÜ',
+   serviceType          varchar(50) comment '·şÎñÀàĞÍ',
+   priceNumMin          int(10) comment '¼Û¸ñÏÂÏŞÊıÖµ¡¾µ¥Î»£ºÔª¡¿',
+   priceNumMax          int(11) comment '¼Û¸ñÉÏÏŞÊıÖµ¡¾µ¥Î»£ºÔª¡¿',
    primary key (serviceID)
 );
 
-alter table bs_patent_servicePriceDict_t comment 'ä¸šåŠ¡æ¨¡å—-ä¸“åˆ©-æœåŠ¡ä»·æ ¼å­—å…¸è¡¨ã€æŒ‰ç…§åŸå¸‚åŒºåˆ†ã€‘';
+alter table bs_patent_servicePriceDict_t comment 'ÒµÎñÄ£¿é-×¨Àû-·şÎñ¼Û¸ñ×Öµä±í¡¾°´ÕÕ³ÇÊĞÇø·Ö¡¿';
 
 /*==============================================================*/
 /* Table: bs_patent_user_t                                      */
 /*==============================================================*/
 create table bs_patent_user_t
 (
-   userID               varchar(20) not null comment 'ç”¨æˆ·IDï¼Œç”¨ä½œç™»å½•è´¦å·',
-   userName             varchar(30) comment 'ç”¨æˆ·åç§°',
-   pwd                  varchar(16) default 'qimou123456' comment 'ç™»å½•å¯†ç ',
-   userRole             varchar(50) comment 'ç”¨æˆ·è§’è‰²ã€0ï¼šè¶…çº§ç®¡ç†å‘˜ï¼›1ï¼šé”€å”®äººå‘˜ï¼›2ï¼šä¸“åˆ©ä»£ç†äººã€å…¨èŒã€‘ï¼›3ï¼šä¸“åˆ©ä»£ç†äººã€å…¼èŒã€‘4ï¼šè´¢åŠ¡äººå‘˜ï¼›5ï¼šæµç¨‹äººã€‘',
-   userEmail            varchar(30) comment 'ç”¨æˆ·é‚®ç®±åœ°å€',
-   userCellPhone        varchar(11) comment 'ç”¨æˆ·æ‰‹æœº',
-   userStat             int(1) comment 'ç”¨æˆ·çŠ¶æ€ã€1ï¼šæ­£å¸¸ï¼›2ï¼šæ³¨é”€ã€‘',
-   userDepartment       varchar(20) comment 'ç”¨æˆ·éƒ¨é—¨',
-   userGender           int(1) comment 'ç”¨æˆ·æ€§åˆ«ï¼š0ï¼Œè¡¨ç¤ºå¥³ï¼›1ï¼Œè¡¨ç¤ºç”·',
-   createTime           timestamp default CURRENT_TIMESTAMP comment 'åˆ›å»ºæ—¶é—´',
+   userID               varchar(20) not null comment 'ÓÃ»§ID£¬ÓÃ×÷µÇÂ¼ÕËºÅ',
+   userName             varchar(30) comment 'ÓÃ»§Ãû³Æ',
+   pwd                  varchar(16) default 'qimou123456' comment 'µÇÂ¼ÃÜÂë',
+   userRole             varchar(50) comment 'ÓÃ»§½ÇÉ«¡¾0£º³¬¼¶¹ÜÀíÔ±£»1£ºÏúÊÛÈËÔ±£»2£º×¨Àû´úÀíÈË¡¾È«Ö°¡¿£»3£º×¨Àû´úÀíÈË¡¾¼æÖ°¡¿4£º²ÆÎñÈËÔ±£»5£ºÁ÷³ÌÈË¡¿',
+   userEmail            varchar(30) comment 'ÓÃ»§ÓÊÏäµØÖ·',
+   userCellPhone        varchar(11) comment 'ÓÃ»§ÊÖ»ú',
+   userStat             int(1) comment 'ÓÃ»§×´Ì¬¡¾1£ºÕı³££»2£º×¢Ïú¡¿',
+   userDepartment       varchar(20) comment 'ÓÃ»§²¿ÃÅ',
+   userGender           int(1) comment 'ÓÃ»§ĞÔ±ğ£º0£¬±íÊ¾Å®£»1£¬±íÊ¾ÄĞ',
+   createTime           timestamp default CURRENT_TIMESTAMP comment '´´½¨Ê±¼ä',
    primary key (userID)
 );
 
-alter table bs_patent_user_t comment 'ç”¨æˆ·ä¿¡æ¯è¡¨';
+alter table bs_patent_user_t comment 'ÓÃ»§ĞÅÏ¢±í';
 
 /*==============================================================*/
 /* Table: bs_patent_usertask_t                                  */
 /*==============================================================*/
 create table bs_patent_usertask_t
 (
-   taskID               varchar(36) comment 'ä»»åŠ¡ID',
-   userID               varchar(20) comment 'ç”¨æˆ·ID',
-   fenpeiTime           timestamp default CURRENT_TIMESTAMP comment 'ä»»åŠ¡åˆ†é…æ—¶é—´'
+   taskID               varchar(36) comment 'ÈÎÎñID',
+   userID               varchar(20) comment 'ÓÃ»§ID',
+   fenpeiTime           timestamp default CURRENT_TIMESTAMP comment 'ÈÎÎñ·ÖÅäÊ±¼ä'
 );
 
-alter table bs_patent_usertask_t comment 'ç”¨æˆ·ä»»åŠ¡ä¸­é—´è¡¨';
+alter table bs_patent_usertask_t comment 'ÓÃ»§ÈÎÎñÖĞ¼ä±í';
 
 alter table bs_patent_accounterDetail_t add constraint FK_Reference_1 foreign key (customerID)
       references bs_patent_customer_t (customerID) on delete restrict on update restrict;

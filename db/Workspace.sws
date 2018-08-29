@@ -13,6 +13,7 @@
 		<Model Expanded="Yes" ID="{C421F1AD-63F8-470A-A5D6-26E1317F1B88}" Loaded="No" Name="专利项目数据模型" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="专利项目数据模型.pdm"/>
 		<Model Expanded="Yes" ID="{C421F1AD-63F8-470A-A5D6-26E1317F1B88}" Loaded="No" Name="专利项目数据模型" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="专利项目数据模型.pdm"/>
 		<Model Expanded="Yes" ID="{C421F1AD-63F8-470A-A5D6-26E1317F1B88}" Loaded="No" Name="专利项目数据模型" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="专利项目数据模型.pdm"/>
+		<Model Expanded="Yes" ID="{C421F1AD-63F8-470A-A5D6-26E1317F1B88}" Loaded="No" Name="专利项目数据模型" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="专利项目数据模型.pdm"/>
 		<Model Expanded="Yes" ID="{C421F1AD-63F8-470A-A5D6-26E1317F1B88}" Name="专利项目数据模型" Selected="Yes" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="专利项目数据模型.pdm"/>
 	</Local>
 	<BrowserModule Name="Repository"/>
